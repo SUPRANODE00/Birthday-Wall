@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Happy Birthday Jack Tuhy | D3M13N 𖤐 CAPSULECRAFT</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff007f;--cyan:#00f3ff;--purple:#bd00ff;--lime:#39ff14;--yellow:#fffe00;--bg:#050508;--text:#fff;
+--gp:0 0 10px var(--pink),0 0 24px var(--pink);--gc:0 0 10px var(--cyan),0 0 24px var(--cyan);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{color-scheme:dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Orbitron',system-ui,sans-serif;overflow-x:hidden;min-height:100vh}
+.uv{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 50% 15%,rgba(189,0,255,.2),transparent 50%),radial-gradient(circle at 15% 85%,rgba(0,243,255,.12),transparent 40%),radial-gradient(circle at 85% 85%,rgba(255,0,127,.12),transparent 40%),linear-gradient(180deg,#030008,#0a0216 50%,#050508)}
+.grid{position:fixed;inset:0;z-index:-1;background-image:linear-gradient(rgba(189,0,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(189,0,255,.07) 1px,transparent 1px);background-size:40px 40px;transform:perspective(500px) rotateX(60deg);transform-origin:center top;animation:gp 8s ease-in-out infinite alternate}
+@keyframes gp{from{opacity:.3;filter:hue-rotate(0)}to{opacity:.7;filter:hue-rotate(50deg)}}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+header{text-align:center;padding:2.5rem 1rem 1rem}
+.brand{font-family:'VT323',monospace;font-size:1.3rem;color:var(--cyan);letter-spacing:3px;text-shadow:var(--gc)}
+h1{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,8vw,4.5rem);margin:.5rem 0;animation:tg 3s ease-in-out infinite alternate}
+@keyframes tg{from{text-shadow:0 0 10px var(--pink),0 0 30px var(--purple)}to{text-shadow:0 0 14px var(--cyan),0 0 40px var(--pink)}}
+.sub{color:var(--pink);letter-spacing:3px;text-shadow:var(--gp);font-size:.95rem}
+.wrap{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;display:flex;flex-direction:column;gap:2rem}
+section{border-radius:16px;padding:2rem 1rem;text-align:center;background:rgba(12,3,26,.8)}
+h2{font-family:'Cinzel Decorative',serif;font-size:clamp(1.2rem,4vw,1.9rem);margin-bottom:.6rem}
+p.lead{max-width:680px;margin:0 auto 1.5rem;color:#dcd0ff;line-height:1.6;font-size:.95rem}
+.temple{border:2px solid var(--purple);box-shadow:0 0 25px rgba(189,0,255,.4)}
+.temple h2{color:var(--cyan);text-shadow:var(--gc)}
+.stage{display:flex;justify-content:center;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.pillar{width:200px;padding:1.2rem;border:2px solid var(--pink);border-radius:12px;box-shadow:var(--gp);background:rgba(20,5,40,.9)}
+.pillar.boaz{border-color:var(--cyan);box-shadow:var(--gc)}
+.pillar h3{font-family:'Cinzel Decorative',serif;color:var(--pink);text-shadow:var(--gp)}
+.pillar.boaz h3{color:var(--cyan);text-shadow:var(--gc)}
+.pillar small{display:block;color:#aaa;letter-spacing:2px;margin:.3rem 0 .6rem;font-size:.7rem;text-transform:uppercase}
+.bridge{width:250px;aspect-ratio:1;border-radius:50%;border:3px solid var(--purple);display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(40,5,60,.95),rgba(10,2,20,.98));animation:bp 4s ease-in-out infinite alternate}
+@keyframes bp{from{box-shadow:0 0 30px var(--purple)}to{box-shadow:0 0 55px var(--cyan)}}
+.spin{width:110px;height:110px;animation:sp 30s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.bridge span{margin-top:.8rem;font-size:.75rem;color:var(--yellow);text-shadow:0 0 8px var(--yellow);letter-spacing:2px;text-transform:uppercase}
+.effigy{border:2px solid var(--cyan);box-shadow:0 0 30px rgba(0,243,255,.3)}
+.effigy h2{color:var(--pink);text-shadow:var(--gp)}
+.crew{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap}
+.box{width:220px;padding:1.2rem;border:2px solid var(--purple);border-radius:12px;background:rgba(20,5,35,.8);transition:.3s}
+.box:hover{transform:translateY(-5px);border-color:var(--cyan);box-shadow:0 0 28px var(--cyan)}
+.box h4{font-family:'Cinzel Decorative',serif;color:var(--yellow);text-shadow:0 0 8px var(--yellow);margin:.4rem 0 .2rem}
+.box .role{font-size:.72rem;color:var(--cyan);letter-spacing:1.5px;text-transform:uppercase}
+.cake{border:2px solid var(--lime);box-shadow:0 0 30px rgba(57,255,20,.3)}
+.cake h2{color:var(--lime);text-shadow:0 0 10px var(--lime)}
+.flame{animation:fl .35s ease-in-out infinite alternate;transform-origin:50% 100%;transition:opacity .4s}
+.flame.out{opacity:0;animation:none}
+@keyframes fl{from{transform:scale(1,1)}to{transform:scale(.85,1.15)}}
+.msg{font-style:italic;font-size:1.1rem;line-height:1.6;margin:1rem 0;min-height:3.2em;text-shadow:0 0 8px rgba(255,255,255,.5)}
+.sig{font-family:'VT323',monospace;font-size:1.5rem;color:var(--cyan);text-shadow:var(--gc);margin-bottom:1.2rem}
+button{background:transparent;border:2px solid var(--pink);color:var(--pink);font:700 .9rem 'Orbitron',sans-serif;padding:.8rem 1.6rem;border-radius:30px;cursor:pointer;text-shadow:var(--gp);box-shadow:var(--gp);letter-spacing:2px;text-transform:uppercase;margin:.3rem;transition:.3s}
+button:hover{background:var(--pink);color:#000}
+footer{text-align:center;padding:2rem 1rem;font-size:.8rem;color:#8d78ad;border-top:1px solid rgba(189,0,255,.25);background:#030005}
+footer b{color:var(--pink)}
+</style>
+</head>
+<body>
+<div class="uv"></div><div class="grid"></div><canvas id="fx"></canvas>
+
+<header>
+  <div class="brand">D3M13N 𖤐 CAPSULECRAFT // BLACKLIGHT SERIES</div>
+  <h1>Happy Birthday, Jack Tuhy!</h1>
+  <div class="sub">CELEBRATING IN THE NEON VOID</div>
+</header>
+
+<div class="wrap">
+
+<section class="temple">
+  <h2>The Sanctuary of Jachin, Boaz &amp; The Pentasensory Bridge</h2>
+  <p class="lead">Two pillars, one bridge, five senses. Tonight the whole temple glows for you.</p>
+  <div class="stage">
+    <div class="pillar">
+      <h3>Jachin</h3><small>Left Shoulder</small>
+      <svg viewBox="0 0 100 140" width="80" height="120"><defs><linearGradient id="jg"><stop offset="0" stop-color="#ff007f"/><stop offset=".5" stop-color="#bd00ff"/><stop offset="1" stop-color="#ff007f"/></linearGradient></defs>
+        <rect x="25" y="10" width="50" height="120" fill="url(#jg)" rx="4" stroke="#fff" stroke-width="1.5"/>
+        <path d="M37 15V125M50 15V125M63 15V125" stroke="#000" stroke-width="2" opacity=".6"/>
+        <rect x="18" y="5" width="64" height="10" fill="#ff007f" rx="2"/><rect x="18" y="125" width="64" height="10" fill="#ff007f" rx="2"/></svg>
+    </div>
+    <div class="bridge">
+      <svg class="spin" viewBox="0 0 100 100"><polygon points="50,5 61,38 95,38 67,58 78,91 50,71 22,91 33,58 5,38 39,38" fill="none" stroke="#00f3ff" stroke-width="3"/><circle cx="50" cy="50" r="45" fill="none" stroke="#ff007f" stroke-width="1.5" stroke-dasharray="4 2"/></svg>
+      <span>The Pentasensory Bridge</span>
+    </div>
+    <div class="pillar boaz">
+      <h3>Boaz</h3><small>Right Shoulder</small>
+      <svg viewBox="0 0 100 140" width="80" height="120"><defs><linearGradient id="bg2"><stop offset="0" stop-color="#00f3ff"/><stop offset=".5" stop-color="#bd00ff"/><stop offset="1" stop-color="#00f3ff"/></linearGradient></defs>
+        <rect x="25" y="10" width="50" height="120" fill="url(#bg2)" rx="4" stroke="#fff" stroke-width="1.5"/>
+        <path d="M37 15V125M50 15V125M63 15V125" stroke="#000" stroke-width="2" opacity=".6"/>
+        <rect x="18" y="5" width="64" height="10" fill="#00f3ff" rx="2"/><rect x="18" y="125" width="64" height="10" fill="#00f3ff" rx="2"/></svg>
+    </div>
+  </div>
+</section>
+
+<section class="effigy">
+  <h2>The Effigy of Companionship</h2>
+  <p class="lead">For the bond between Jack and his husband <strong>Wayne</strong>, guarded always by their cat, <strong>Rascal</strong>.</p>
+  <div class="crew">
+    <div class="box">
+      <svg viewBox="0 0 100 100" width="90" height="90">
+        <polygon points="28,38 20,20 40,32" fill="#ff77aa" stroke="#ff007f" stroke-width="2"/><polygon points="72,38 80,20 60,32" fill="#ff77aa" stroke="#ff007f" stroke-width="2"/>
+        <circle cx="50" cy="55" r="30" fill="#ff77aa" stroke="#ff007f" stroke-width="2"/>
+        <ellipse cx="50" cy="62" rx="12" ry="8" fill="#ff4488" stroke="#fff" stroke-width="1.5"/><circle cx="46" cy="62" r="1.5" fill="#330011"/><circle cx="54" cy="62" r="1.5" fill="#330011"/>
+        <circle cx="40" cy="48" r="3" fill="#220011"/><circle cx="60" cy="48" r="3" fill="#220011"/>
+        <path d="M30 14l5 8 5-8 5 8 5-8 5 8 5-8 5 8 5-8" fill="none" stroke="#fffe00" stroke-width="2"/></svg>
+      <h4>Jack</h4><div class="role">Birthday Pig of Honor</div>
+    </div>
+    <div class="box">
+      <svg viewBox="0 0 100 100" width="90" height="90">
+        <polygon points="28,38 20,20 40,32" fill="#ff99cc" stroke="#00f3ff" stroke-width="2"/><polygon points="72,38 80,20 60,32" fill="#ff99cc" stroke="#00f3ff" stroke-width="2"/>
+        <circle cx="50" cy="55" r="30" fill="#ff99cc" stroke="#00f3ff" stroke-width="2"/>
+        <ellipse cx="50" cy="62" rx="12" ry="8" fill="#ff66aa" stroke="#fff" stroke-width="1.5"/><circle cx="46" cy="62" r="1.5" fill="#330011"/><circle cx="54" cy="62" r="1.5" fill="#330011"/>
+        <circle cx="40" cy="48" r="3" fill="#220011"/><circle cx="60" cy="48" r="3" fill="#220011"/>
+        <path d="M36 40q4-4 8 0M56 40q4-4 8 0" stroke="#00f3ff" stroke-width="2" fill="none"/></svg>
+      <h4>Wayne</h4><div class="role">Husband &amp; Partner Pig</div>
+    </div>
+    <div class="box">
+      <svg viewBox="0 0 100 100" width="90" height="90">
+        <polygon points="26,44 22,16 44,32" fill="#2a1a3a" stroke="#bd00ff" stroke-width="2"/><polygon points="74,44 78,16 56,32" fill="#2a1a3a" stroke="#bd00ff" stroke-width="2"/>
+        <circle cx="50" cy="57" r="29" fill="#2a1a3a" stroke="#bd00ff" stroke-width="2"/>
+        <ellipse cx="40" cy="52" rx="5" ry="7" fill="#39ff14"/><ellipse cx="60" cy="52" rx="5" ry="7" fill="#39ff14"/>
+        <ellipse cx="40" cy="52" rx="1.5" ry="6" fill="#000"/><ellipse cx="60" cy="52" rx="1.5" ry="6" fill="#000"/>
+        <polygon points="46,63 54,63 50,68" fill="#ff007f"/>
+        <path d="M50 68q-5 6-10 3M50 68q5 6 10 3M30 64l-14-3M30 68l-14 3M70 64l14-3M70 68l14 3" stroke="#fff" stroke-width="1.2" fill="none"/></svg>
+      <h4>Rascal</h4><div class="role">Guardian Cat</div>
+    </div>
+  </div>
+</section>
+
+<section class="cake">
+  <h2>Make a Wish</h2>
+  <svg viewBox="0 0 120 110" width="150" height="138" aria-label="Birthday cake">
+    <g id="flame" class="flame"><path d="M60 8c8 10 8 16 0 22-8-6-8-12 0-22z" fill="#fffe00" stroke="#ff007f" stroke-width="1.5"/></g>
+    <rect x="57" y="28" width="6" height="22" fill="#00f3ff"/>
+    <rect x="20" y="50" width="80" height="22" rx="4" fill="#bd00ff" stroke="#fff" stroke-width="1.5"/>
+    <rect x="10" y="72" width="100" height="28" rx="4" fill="#ff007f" stroke="#fff" stroke-width="1.5"/>
+    <path d="M20 50q10 10 20 0t20 0 20 0 20 0" fill="none" stroke="#fff" stroke-width="2"/></svg>
+  <div class="msg" id="msg">Jack, may your year be loud, glowing, and full of people who love you.</div>
+  <div class="sig">— D3M13N 𖤐 CAPSULECRAFT</div>
+  <button id="blow">Blow Out Candle</button>
+  <button id="boom">Confetti</button>
+</section>
+
+</div>
+<footer>Made with <b>♥</b> and blacklight by <b>D3M13N 𖤐 CAPSULECRAFT</b> · Houston, TX</footer>
+
+<script>
+const cv=document.getElementById('fx'),cx=cv.getContext('2d');let P=[],run=false;
+function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener('resize',rs);
+const cols=['#ff007f','#00f3ff','#bd00ff','#39ff14','#fffe00'];
+function burst(){for(let i=0;i<140;i++)P.push({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*14,vy:Math.random()*-13-3,s:Math.random()*6+3,c:cols[i%5],r:Math.random()*6,l:140});if(!run){run=true;tick()}}
+function tick(){cx.clearRect(0,0,cv.width,cv.height);P=P.filter(p=>p.l>0);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.r+=.2;p.l--;cx.save();cx.globalAlpha=Math.min(1,p.l/40);cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.shadowColor=p.c;cx.shadowBlur=8;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore()});
+if(P.length)requestAnimationFrame(tick);else{run=false;cx.clearRect(0,0,cv.width,cv.height)}}
+const fl=document.getElementById('flame'),m=document.getElementById('msg'),b=document.getElementById('blow');
+b.onclick=()=>{const out=fl.classList.toggle('out');b.textContent=out?'Relight Candle':'Blow Out Candle';
+m.textContent=out?'Wish locked in. Happy Birthday, Jack! 𖤐':'Jack, may your year be loud, glowing, and full of people who love you.';if(out)burst()};
+document.getElementById('boom').onclick=burst;
+</script>
+</body>
+</html>

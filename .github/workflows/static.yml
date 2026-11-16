@@ -1,0 +1,60 @@
+# Omnidirectional Loop-Automated Ingress-Egress Compute-Node Workflow
+name: Omnidirectional Synergy Compute-Node Deploy
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      node_mode:
+        description: 'Compute-node operation mode (render/convert/broker)'
+        required: true
+        default: 'omnidirectional'
+        type: choice
+        options:
+          - omnidirectional
+          - ingress-egress
+          - equilibrium-sync
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "omnidirectional-compute-node"
+  cancel-in-progress: false
+
+jobs:
+  synergy-compute-node:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Origin
+        uses: actions/checkout@v4
+
+      - name: Initialize Side-Observant Agent & Broker Environment
+        run: |
+          echo "Initializing adaptive side-attached endpoint..."
+          mkdir -p .compute-node/telemetry
+          echo "node_mode: ${{ github.event.inputs.node_mode || 'omnidirectional' }}" > .compute-node/state.yaml
+
+      - name: Setup Pages Pipeline
+        uses: actions/configure-pages@v5
+
+      - name: Render & Convert Energy/Signal Artifacts
+        run: |
+          echo "Executing throughroot omnidirectional-process and energy conversion..."
+          # Placeholder for signal amplification and rendering tasks
+          echo "{\"status\": \"active\", \"timestamp\": \"$(date -u +'%Y--%m-%dT%H:%M:%SZ')\"}" > .compute-node/telemetry/metrics.json
+
+      - name: Upload Synergy Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy Equilibrium Endpoint to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

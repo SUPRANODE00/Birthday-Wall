@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<link rel="icon" href="data:,"/>
+<title>Capsulecraft Global Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3efe6; --surface:#fffdf7; --surface2:#ece7d9; --ink:#17201c; --muted:#6a756e; --line:#ddd6c2;
+  --teal:#0f766e; --teal2:#14b8a6; --gold:#c08a12; --gold2:#f2c94c; --night:#12212e;
+  --good:#15803d; --pill:#e6f2ed;
+  --anti:#0369a1; --anti-soft:#e0f2fe;
+  --radius:18px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0d1311; --surface:#161e1a; --surface2:#1e2a25; --ink:#edf2ee; --muted:#9aaca2; --line:#2a3a33; --pill:#1d2f28; --night:#0a1620; --anti:#7dd3fc; --anti-soft:#0c2a3d; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,sans-serif;line-height:1.5}
+a{color:var(--teal)}
+.mono{font-family:"IBM Plex Mono",monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 36px}
+h1,h2,h3{font-family:"Bricolage Grotesque",sans-serif;line-height:.95;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(38px,6vw,68px);font-weight:800}
+h2{font-size:26px}
+h3{font-size:18px}
+p{margin:0}
+.hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;padding:14px 0 18px;border-bottom:2px solid var(--ink)}
+.hero p.lede{max-width:560px;color:var(--muted);margin-top:10px;font-size:16px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat b{display:block;font-size:20px;margin-top:4px;font-family:"IBM Plex Mono",monospace;font-weight:600}
+.stat span{font-size:13px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:1.55fr .95fr;gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.card + .card{margin-top:16px}
+.globe-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.globe-wrap{position:relative;margin-top:14px;background:radial-gradient(circle at 38% 32%, #2a5a6b, var(--night) 68%);border-radius:16px;overflow:hidden;aspect-ratio:1/1;max-height:620px;width:100%}
+canvas#globe{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+canvas#globe:active{cursor:grabbing}
+.globe-hint{position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.55);color:#fff;padding:6px 10px;border-radius:999px;font-size:12px;backdrop-filter:blur(6px)}
+.globe-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{appearance:none;border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:999px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px}
+button.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+button.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+button:active{transform:translateY(1px)}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:15px}
+label.f{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+label.f:first-child{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pill{display:inline-flex;padding:4px 9px;border-radius:999px;background:var(--pill);font-size:12px;font-weight:600}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row b{font-size:15px}.row p{font-size:13px;color:var(--muted)}
+input[type=range]{padding:0;accent-color:var(--teal)}
+.addr{font-family:"IBM Plex Mono",monospace;font-size:13px;word-break:break-all;background:var(--surface2);padding:10px;border-radius:10px}
+.compass{display:flex;gap:16px;align-items:center}
+.dial{width:110px;height:110px;flex:0 0 auto}
+.bottom{display:grid;grid-template-columns:1fr 1.25fr;gap:16px;margin-top:16px}
+.codebox{border:1.5px dashed var(--gold);background:#fff8db;color:#5c4300;border-radius:12px;padding:14px;text-align:center}
+@media(prefers-color-scheme:dark){.codebox{background:#2a2210;color:#fde68a}}
+.codebox b{font-size:32px;letter-spacing:.35em;font-family:"IBM Plex Mono",monospace}
+.msg{margin-top:10px;font-size:14px;padding:10px 12px;border-radius:10px;display:none}
+.msg.show{display:block}.msg.ok{background:#dcfce7;color:#14532d}.msg.warn{background:#fef3c7;color:#713f12}
+@media(prefers-color-scheme:dark){.msg.ok{background:#14532d;color:#dcfce7}.msg.warn{background:#713f12;color:#fef3c7}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:12px;padding:5px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);cursor:pointer}
+.emblem-stage{display:grid;grid-template-columns:180px 1fr;gap:16px;margin-top:14px;align-items:start}
+.emblem-box{background:var(--surface2);border-radius:14px;aspect-ratio:1;display:grid;place-items:center;padding:12px}
+canvas#heightmap{width:100%;border-radius:12px;background:#111;display:block;aspect-ratio:4/3}
+.avatar-mini{display:flex;gap:14px;align-items:center}
+.avatar-orb{width:64px;height:64px;border-radius:50%;background:conic-gradient(from 210deg,var(--teal),var(--gold2),var(--teal));display:grid;place-items:center;font-size:26px;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
+footer{margin-top:20px;color:var(--muted);font-size:13px;text-align:center}
+.dupode{display:grid;grid-template-columns:1fr .85fr 1fr;gap:14px;margin-top:14px;align-items:stretch}
+.polebox{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--bg)}
+.polebox.anti{border:1.5px solid var(--anti)}
+.polebox .phead{display:flex;align-items:center;gap:8px}
+.swatch{width:14px;height:14px;border-radius:50%;flex:0 0 auto;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.swatch.pole{background:var(--gold2)}
+.swatch.anti{background:#38bdf8}
+.polebox .coords{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;margin-top:6px}
+.polebox .sub{font-size:13px;color:var(--muted)}
+.axisbox{border:1px dashed var(--line);border-radius:14px;padding:14px 16px;background:var(--surface2);display:flex;flex-direction:column;justify-content:center;gap:6px;text-align:center}
+.axisbox b{font-family:"IBM Plex Mono",monospace;font-size:17px}
+.axisbox span{font-size:12.5px;color:var(--muted)}
+.modebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.modebar .mlabel{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+button.modebtn{background:transparent;color:var(--ink);border-color:var(--line)}
+button.modebtn.on{background:var(--teal);border-color:var(--teal);color:#fff}
+button.modebtn.on.opp{background:var(--anti);border-color:var(--anti);color:#fff}
+.pulsedot{width:22px;height:22px;border-radius:50%;flex:0 0 auto}
+.pulsedot.pole{background:var(--gold2);border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.pulsedot.anti{background:#38bdf8;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+@keyframes pulsebeat{0%,100%{transform:scale(1)}18%{transform:scale(1.45)}36%{transform:scale(1.08)}}
+.pulsing{animation:pulsebeat 0.97s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.pulsing{animation:none}}
+.welfare{display:none;margin-top:12px;padding:12px 14px;border-radius:12px;background:#fef3c7;color:#713f12;border:1.5px solid var(--gold);font-weight:600;font-size:14px}
+@media(prefers-color-scheme:dark){.welfare{background:#3a2c07;color:#fde68a}}
+.welfare.show{display:block}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.tcell{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.tcell label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.tcell b{display:block;font-size:19px;font-family:"IBM Plex Mono",monospace;font-weight:600;margin-top:2px}
+.tcell span{font-size:12px;color:var(--muted)}
+.tcell.flag{border-color:#dc2626;background:#fef2f2}
+@media(prefers-color-scheme:dark){.tcell.flag{background:#2a0f0f}}
+.anom{margin-top:12px;padding:11px 13px;border-radius:12px;font-size:14px;display:none}
+.anom.show{display:block}
+.anom.ok{background:#dcfce7;color:#14532d}.anom.bad{background:#fee2e2;color:#7f1d1d}
+@media(prefers-color-scheme:dark){.anom.ok{background:#14532d;color:#dcfce7}.anom.bad{background:#7f1d1d;color:#fee2e2}}
+.chain{display:grid;gap:0;margin-top:14px}
+.cstep{display:flex;gap:12px;align-items:flex-start}
+.cdot{width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:0 0 auto;font-family:"IBM Plex Mono",monospace}
+.cstep:not(:last-child) .cdot{box-shadow:0 34px 0 -14px var(--line)}
+.cbody{padding-bottom:16px;flex:1;min-width:0}
+.cbody b{font-size:15px}.cbody p{font-size:13px;color:var(--muted)}
+.cval{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--surface2);border-radius:8px;padding:7px 9px;margin-top:6px;word-break:break-all}
+pre.framejson{background:var(--night);color:#d1fae5;border-radius:12px;padding:14px;font-size:12px;line-height:1.55;overflow-x:auto;margin:10px 0 0;white-space:pre-wrap;word-break:break-word}
+.cmdbox{font-family:"IBM Plex Mono",monospace;font-size:13px;background:var(--surface2);border-radius:10px;padding:10px 12px;margin-top:8px;word-break:break-all}
+select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:15px}
+.reqitem{border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-top:10px;background:var(--bg);font-size:14px}
+.cellchange{font-weight:700;color:var(--anti)}
+.encap-stage{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:14px;align-items:start}
+.encap-wrap{position:relative;background:radial-gradient(circle at 50% 28%, #2b4a5e, var(--night) 72%);border-radius:16px;overflow:hidden;width:100%}
+canvas#encapCanvas{width:100%;height:auto;display:block;aspect-ratio:72/52}
+.macbox{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;letter-spacing:.06em;background:var(--night);color:#a7f3d0;border-radius:12px;padding:14px;text-align:center;word-break:break-all}
+@media(prefers-color-scheme:light){.macbox{background:#12212e;color:#a7f3d0}}
+@media(max-width:860px){.encap-stage{grid-template-columns:1fr}}
+.livebar{border:1.5px solid var(--teal);background:var(--surface);border-radius:14px;padding:14px;margin-top:14px}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#94a3b8;display:inline-block;flex:0 0 auto}
+.live-dot.on{background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.18)}
+.live-dot.err{background:#ef4444;box-shadow:0 0 0 5px rgba(239,68,68,.15)}
+.lgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+@media(max-width:860px){.lgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:860px){.stats{grid-template-columns:1fr 1fr}.layout,.bottom{grid-template-columns:1fr}.hero{flex-direction:column;align-items:flex-start}.emblem-stage{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.dupode{grid-template-columns:1fr}.tgrid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="badge"><span class="dot"></span> Capsulecraft &bull; Live Globe</div>
+      <h1 style="margin-top:12px">Global Map</h1>
+      <p class="lede">Your avatar on a living globe — sun position, heading, receptive field and emblem, all computed in this browser. Your avatar is one end of a dipole: its anti-pole sits exactly opposite, and the Dupode panel below treats the pair as one unit. Drag the globe to look around. Click it to move your avatar — the anti-pole follows.</p>
+    </div>
+    <div style="text-align:right;min-width:180px">
+      <div class="mono" id="heroClock" style="font-size:28px;font-weight:600">--:--:--</div>
+      <div style="color:var(--muted);font-size:13px">UTC &bull; <span id="heroDate">—</span></div>
+      <div style="margin-top:8px"><span class="pill">● 1 avatar online — you</span></div>
+    </div>
+  </header>
+
+  <section class="stats" aria-label="Live status">
+    <div class="stat"><label>🌐 Avatar</label><b>Globe</b><span id="avatarCoords">—</span></div>
+    <div class="stat"><label>🕐 Clock — live</label><b id="statClock">--:--:-- UTC</b><span>Updates every second</span></div>
+    <div class="stat"><label>☀️ Sun at avatar</label><b id="sunInfo">—</b><span id="sunSub">Subsolar point —</span></div>
+    <div class="stat"><label>👀 Looking at</label><b id="lookInfo">0.0°, 0.0°</b><span>Center of view</span></div>
+  </section>
+
+  <div class="layout">
+    <section class="card">
+      <div class="globe-head">
+        <div><h2>The globe</h2><p style="color:var(--muted);font-size:14px;margin-top:4px">Orthographic view. Gold dot = your avatar (the pole). Blue dot = its anti-pole, exactly opposite through the centre. The dashed line is the dipole axis. Bright side faces the sun.</p></div>
+        <span class="pill" id="dayNightPill">—</span>
+      </div>
+      <div class="globe-wrap">
+        <canvas id="globe" width="800" height="800" aria-label="Interactive globe"></canvas>
+        <div class="globe-hint">Drag to spin &bull; Click to place avatar &bull; Scroll pauses auto-spin</div>
+      </div>
+      <div class="globe-tools">
+        <button id="spinBtn">Pause spin</button>
+        <button class="secondary" id="sunBtn">Face the sun</button>
+        <button class="secondary" id="homeBtn">Go to avatar</button>
+        <button class="secondary" id="antiBtn">Go to anti-pole</button>
+        <button class="secondary" id="axisBtn">Hide dipole axis</button>
+        <button class="secondary" id="nightBtn">Toggle night shading</button>
+      </div>
+      <div class="grid2" style="margin-top:14px">
+        <div class="stat" style="background:var(--bg)"><label>Avatar latitude</label><b id="avLat">51.5° N</b></div>
+        <div class="stat" style="background:var(--bg)"><label>Avatar longitude</label><b id="avLon">0.1° W</b></div>
+        <div class="stat" style="background:var(--bg)"><label>Anti-pole latitude</label><b id="antiLat">51.5° S</b></div>
+        <div class="stat" style="background:var(--bg)"><label>Anti-pole longitude</label><b id="antiLon">179.9° E</b></div>
+      </div>
+    </section>
+
+    <div>
+      <section class="card">
+        <div class="avatar-mini">
+          <div class="avatar-orb" id="orbIcon">🧭</div>
+          <div><h2 id="displayNameTitle">Your capsule</h2><p style="color:var(--muted);font-size:14px">Avatar identity</p></div>
+        </div>
+        <label class="f" for="bizName">Business / display name</label>
+        <input id="bizName" placeholder="e.g. Capsulecraft Studio" value="Capsulecraft Studio" autocomplete="off"/>
+        <label class="f" for="markInput">Mark (short word or emoji)</label>
+        <input id="markInput" value="globe" placeholder="globe, compass, crystal…"/>
+        <label class="f">Receptive angle — <span class="mono" id="angleVal">120°</span></label>
+        <input type="range" id="angleRange" min="10" max="360" value="120"/>
+        <label class="f">Receptive reach — <span class="mono" id="reachVal">4,200 km</span></label>
+        <input type="range" id="reachRange" min="100" max="12000" step="100" value="4200"/>
+        <div style="margin-top:14px;display:grid;gap:10px">
+          <div><div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Hex address</div><div class="addr" id="hexAddr">—</div></div>
+          <div><div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Nonary address (base-9)</div><div class="addr" id="nonaryAddr">—</div></div>
+        </div>
+        <svg viewBox="0 0 200 110" style="width:100%;margin-top:14px" aria-hidden="true"><circle cx="100" cy="55" r="48" fill="none" stroke="var(--line)" stroke-width="1.5"/><path id="conePath" fill="rgba(20,184,166,.25)" stroke="var(--teal)" stroke-width="1.5"/><circle cx="100" cy="55" r="6" fill="var(--gold)"/></svg>
+        <p style="font-size:13px;color:var(--muted);text-align:center">Receptive field — the cone your avatar listens within</p>
+      </section>
+
+      <section class="card">
+        <h2>Sensors &amp; links</h2>
+        <div class="compass" style="margin-top:12px">
+          <svg class="dial" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="var(--surface2)" stroke="var(--line)"/><g id="dialNeedle"><polygon points="50,12 55,50 45,50" fill="#dc2626"/><polygon points="50,88 55,50 45,50" fill="#64748b"/></g><text x="50" y="22" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">N</text><circle cx="50" cy="50" r="4" fill="var(--ink)"/></svg>
+          <div style="flex:1"><b>Compass</b><p style="color:var(--muted);font-size:14px" id="compassStatus">Off — tap Compass below. Heading follows the globe when live sensors aren’t available.</p><p class="mono" id="headingVal" style="font-size:20px;margin-top:4px">0° N</p></div>
+        </div>
+        <div class="row"><div><b>Compass</b><p id="compassDetail">Device orientation</p></div><button class="secondary" id="compassBtn">Enable compass</button></div>
+        <div class="row"><div><b>Bluetooth — Live Ring</b><p id="btDetail">Not connected · Web Bluetooth ready check below</p></div><button class="secondary" id="btBtn">Connect live ring</button></div>
+        <div class="row"><div><b>NFC</b><p id="nfcDetail">Off — Web NFC is Chrome on Android only</p></div><button class="secondary" id="nfcBtn">Try NFC scan</button></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card" style="margin-top:16px" aria-label="Dupode — dipole pair">
+    <div class="globe-head">
+      <div>
+        <h2>Dupode — the dipole as one unit</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px">Two nodes, one pair. The anti-pole is your avatar mirrored through the centre of the Earth: latitude flipped, longitude shifted 180°. When it is day at one end, it is night at the other. Move the avatar and the whole dupode moves with it.</p>
+      </div>
+      <span class="pill">Separation: always 180°</span>
+    </div>
+
+    <div class="modebar" aria-label="Dupode power mode — powered by ring R01L 4179">
+      <span class="mlabel">Dupode power · ring R01L 4179</span>
+      <button class="modebtn on" id="modeUnion">Union — in sync</button>
+      <button class="modebtn opp" id="modeOpposite">Opposite — mirrored</button>
+      <span style="display:inline-flex;align-items:center;gap:7px"><span class="pulsedot pole" id="pulsePole"></span><span style="font-size:12.5px;color:var(--muted)">pole</span></span>
+      <span style="display:inline-flex;align-items:center;gap:7px"><span class="pulsedot anti" id="pulseAnti"></span><span style="font-size:12.5px;color:var(--muted)">anti-pole</span></span>
+      <span class="mono" id="powerReadout" style="font-size:13px">No telemetry yet — grant consent in the Telemetry panel below and both ends pulse from the ring's live heart rate.</span>
+    </div>
+    <div class="welfare" id="dupWelfare" role="alert">⚠ WELFARE CHECK — the ring telemetry is flagging an anomaly (see the Telemetry panel). The dupode is holding in a welfare-check state until the readings settle.</div>
+
+    <svg viewBox="0 0 640 150" style="width:100%;margin-top:10px" role="img" aria-label="Diagram of the dipole axis passing through the centre of the Earth, joining the pole and anti-pole">
+      <circle cx="320" cy="75" r="58" fill="var(--surface2)" stroke="var(--line)" stroke-width="1.5"/>
+      <g id="dipoleArm">
+        <line x1="279" y1="34" x2="361" y2="116" stroke="var(--anti)" stroke-width="2" stroke-dasharray="6 5"/>
+        <circle cx="279" cy="34" r="9" fill="#f2c94c" stroke="#fff" stroke-width="2.5"/>
+        <circle cx="361" cy="116" r="9" fill="#38bdf8" stroke="#fff" stroke-width="2.5"/>
+      </g>
+      <circle cx="320" cy="75" r="4" fill="var(--ink)"/>
+      <text x="262" y="22" text-anchor="end" font-size="13" font-weight="700" fill="var(--ink)">Pole</text>
+      <text x="378" y="138" font-size="13" font-weight="700" fill="var(--anti)">Anti-pole</text>
+      <text x="320" y="96" text-anchor="middle" font-size="11" fill="var(--muted)">centre</text>
+      <text x="24" y="70" font-size="12.5" fill="var(--muted)">Axis through the centre:</text>
+      <text x="24" y="90" font-size="12.5" fill="var(--muted)">12,742 km end to end</text>
+      <text x="452" y="70" font-size="12.5" fill="var(--muted)">Surface pole → anti-pole:</text>
+      <text x="452" y="90" font-size="12.5" fill="var(--muted)">20,015 km (half the globe)</text>
+    </svg>
+
+    <div class="dupode">
+      <div class="polebox">
+        <div class="phead"><span class="swatch pole"></span><h3>Pole — your avatar</h3></div>
+        <div class="coords" id="dupPoleCoords">—</div>
+        <p class="sub" id="dupPoleSun">—</p>
+        <div style="margin-top:10px;display:grid;gap:8px">
+          <div><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Hex address</div><div class="addr" id="dupPoleHex">—</div></div>
+          <div><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Nonary address (base-9)</div><div class="addr" id="dupPoleNonary">—</div></div>
+        </div>
+        <button class="secondary" id="dupGoPole" style="width:100%;margin-top:12px">View the pole</button>
+      </div>
+
+      <div class="axisbox">
+        <span>Angular separation</span><b>180.0°</b>
+        <span>Through the Earth</span><b>12,742 km</b>
+        <span>Solar-time offset between ends</span><b>12 hours</b>
+        <span id="dupFacing">—</span>
+      </div>
+
+      <div class="polebox anti">
+        <div class="phead"><span class="swatch anti"></span><h3>Anti-pole</h3></div>
+        <div class="coords" id="dupAntiCoords">—</div>
+        <p class="sub" id="dupAntiSun">—</p>
+        <div style="margin-top:10px;display:grid;gap:8px">
+          <div><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Hex address</div><div class="addr" id="dupAntiHex">—</div></div>
+          <div><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Nonary address (base-9)</div><div class="addr" id="dupAntiNonary">—</div></div>
+        </div>
+        <button class="secondary" id="dupGoAnti" style="width:100%;margin-top:12px">View the anti-pole</button>
+      </div>
+    </div>
+    <div class="globe-tools" style="margin-top:14px">
+      <button id="flipBtn">Flip view to the other end</button>
+      <button class="secondary" id="dupAxisBtn">Hide dipole axis</button>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:16px" aria-label="Planetary Encapsulation — MAC of real location and 3D avatar alignment">
+    <div class="globe-head">
+      <div>
+        <h2>Planetary Encapsulation — your real location, as a MAC</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px">A 3D-animated human avatar stands inside a transparent capsule shell, feet planted on the planet and the capsule's long axis locked to the local radial — straight out from the Earth's centre through your position. Tap <b>Use my real location</b> and the browser asks for your position (nothing leaves this page); the capsule, the globe avatar above, and the emulated MAC below all move to it together.</p>
+      </div>
+      <span class="pill" id="encapStatusPill">Awaiting location</span>
+    </div>
+
+    <div class="encap-stage">
+      <div>
+        <div class="encap-wrap">
+          <canvas id="encapCanvas" width="720" height="520" aria-label="Animated 3D-style human avatar inside a capsule aligned to the planet"></canvas>
+          <div class="globe-hint">Capsule axis = local vertical · Animation: breathing, arm swing, slow turn</div>
+        </div>
+        <div class="globe-tools">
+          <button id="geoBtn">📍 Use my real location</button>
+          <button class="secondary" id="geoWatchBtn">Watch my location</button>
+          <button class="secondary" id="geoHomeBtn">Use ring HOME — 0°, 0°</button>
+          <button class="secondary" id="encapAnimBtn">Pause avatar animation</button>
+        </div>
+        <div class="msg" id="geoMsg"></div>
+        <p style="font-size:13px;color:var(--muted);margin-top:10px">Geolocation needs your permission and a secure context. On a phone it uses GPS / Wi-Fi positioning; on desktop it may be Wi-Fi or IP-based and less precise — the accuracy readout tells you which. If permission is denied or unavailable, the capsule stays on the last position and says so, rather than guessing where you are.</p>
+      </div>
+
+      <div>
+        <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)">Emulated MAC — derived from this location</div>
+        <div class="macbox" id="emacBox" style="margin-top:6px">02:00:00:00:00:00</div>
+        <p style="font-size:13px;color:var(--muted);margin-top:8px">A browser cannot read your device's real hardware MAC — so this is an <b>emulated, locally-administered MAC</b> (first byte <span class="mono">02</span> = locally administered, unicast). It is derived deterministically from your coordinates snapped to a ~11&nbsp;m grid (0.0001°): the same place always returns the same MAC, and moving to a new grid cell mints a new one. It identifies <i>this capsule at this place</i>, not your hardware.</p>
+
+        <div class="tgrid" style="grid-template-columns:1fr 1fr">
+          <div class="tcell"><label>Real location</label><b id="encapCoords" style="font-size:15px">51.5° N, 0.1° W</b><span id="encapSource">starting position — not yet your live location</span></div>
+          <div class="tcell"><label>Accuracy</label><b id="encapAcc">—</b><span>reported by the browser / GPS</span></div>
+          <div class="tcell"><label>Capsule alignment</label><b id="encapAlign">0.0° error</b><span>capsule axis vs local radial</span></div>
+          <div class="tcell"><label>Capsule tilt on globe</label><b id="encapTilt">51.5°</b><span>= latitude — lean from the equator plane</span></div>
+          <div class="tcell"><label>Anti-pole capsule</label><b id="encapAnti" style="font-size:15px">51.5° S, 179.9° E</b><span>same capsule axis, opposite end</span></div>
+          <div class="tcell"><label>Pulse sync</label><b id="encapPulse" style="font-size:15px">Idle</b><span>joins the ring pulse when telemetry consent is active</span></div>
+        </div>
+
+        <div style="margin-top:14px;display:grid;gap:8px;font-size:14px">
+          <p>• <b>Encapsulation:</b> the shell is a closed capsule — rounded at head and feet — drawn around the avatar with a glass highlight and a gold equator seam where it meets the planet.</p>
+          <p>• <b>Alignment:</b> wherever you move on Earth, “up” for the capsule is the radial line from the planet's centre through you. The avatar never tilts relative to the ground — only the planet turns beneath it.</p>
+          <p>• <b>Sync:</b> using your real location also moves the gold avatar (and its anti-pole) on the main globe, so Hex / Nonary addresses and the Dupode update to the same place.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:16px" aria-label="Telemetry — consent-first ring feed">
+    <div class="globe-head">
+      <div>
+        <h2>Telemetry — ring R01L 4179</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px">Consent-first. Personnel <b>SELF-4179</b> · sector <b>HOME</b> · 0.0°, 0.0° · ring address <span class="mono">07:32:00:0A:41:79</span> · source: BLE ring. No frame is shown or kept without active consent, and withdrawing consent purges the displayed frame. <b>Live mode</b> below uses real Web Bluetooth in this browser — no server. If no ring connects, the demo stream remains available and is labelled as demo.</p>
+      </div>
+      <span class="pill" id="consentPill">Consent: inactive</span>
+    </div>
+
+    <div class="livebar" aria-label="Live ring connection">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+        <div style="display:flex;gap:10px;align-items:center"><span class="live-dot" id="liveDot"></span><div><b style="font-size:16px">Live ring connection</b><p style="font-size:13px;color:var(--muted)" id="liveStatusText">Checking Web Bluetooth support…</p></div></div>
+        <span class="pill" id="livePill">NOT CONNECTED</span>
+      </div>
+      <div class="lgrid">
+        <div class="tcell"><label>Live heart rate</label><b id="liveHr">—</b><span id="liveHrSub">from 0x2A37 notifications</span></div>
+        <div class="tcell"><label>Live HRV · RMSSD</label><b id="liveHrv">—</b><span id="liveRrSub">needs ≥8 RR intervals</span></div>
+        <div class="tcell"><label>Live battery</label><b id="liveBatt">—</b><span>from 0x2A19 · if exposed</span></div>
+        <div class="tcell"><label>Last notification</label><b id="liveLast" style="font-size:14px">—</b><span id="liveRaw">raw 0x2A37: —</span></div>
+      </div>
+      <div class="globe-tools" style="margin-top:12px">
+        <button id="liveConnectBtn">● Connect live ring — Heart Rate service</button>
+        <button class="secondary" id="liveAllBtn">Show all Bluetooth devices</button>
+        <button class="secondary" id="liveDisconnectBtn" disabled>Disconnect</button>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px">How live works: tap Connect, pick <b>R01L 4179</b> (or your ring) in Chrome / Edge's Bluetooth picker, and this page subscribes directly to Heart Rate Measurement <span class="mono">0x2A37</span> + Battery <span class="mono">0x2A19</span>. Needs Bluetooth on, ring awake &amp; nearby, vendor app closed (one BLE connection at a time), and a browser with Web Bluetooth — Chrome / Edge on desktop &amp; Android. Safari / Firefox and in-app webviews don't expose Web Bluetooth, so live can't start there. No data leaves this browser. Temp / SpO₂ / steps aren't on the standard Heart Rate service (this ring's <span class="mono">custom_map</span> is empty), so live mode doesn't fake them — it shows live HR, HRV and battery only for those fields.</p>
+      <div class="msg" id="liveMsg"></div>
+    </div>
+
+    <div class="modebar">
+      <span class="mlabel">Consent · scopes: heart_rate, device</span>
+      <button id="consentBtn">Grant consent for SELF-4179</button>
+      <span style="font-size:13px;color:var(--muted)" id="consentNote">While consent is inactive, no telemetry frame exists on this page.</span>
+    </div>
+
+    <div id="telemetryBody" style="display:none">
+      <div class="tgrid">
+        <div class="tcell" id="cellHr"><label>Heart rate</label><b id="tHr">—</b><span>resting 62 bpm</span></div>
+        <div class="tcell" id="cellHrv"><label>HRV · RMSSD</label><b id="tHrv">—</b><span>baseline 45 ms</span></div>
+        <div class="tcell" id="cellStress"><label>Stress index (proxy)</label><b id="tStress">—</b><span>alert above 0.75</span></div>
+        <div class="tcell" id="cellStatus"><label>Status</label><b id="tStatus" style="font-size:16px">—</b><span id="tUpdated">—</span></div>
+        <div class="tcell" id="cellCore"><label>Core temp</label><b id="tCore">—</b><span>alert &gt;39 °C or &lt;35 °C</span></div>
+        <div class="tcell" id="cellSpo2"><label>SpO₂</label><b id="tSpo2">—</b><span>alert below 92%</span></div>
+        <div class="tcell" id="cellSkin"><label>Skin temp</label><b id="tSkin">—</b><span>ring surface reading</span></div>
+        <div class="tcell" id="cellSteps"><label>Steps</label><b id="tSteps">—</b><span>today, from the ring</span></div>
+        <div class="tcell" id="cellBatt"><label>Battery</label><b id="tBatt">—</b><span>alert below 20%</span></div>
+        <div class="tcell" id="cellFault"><label>Device fault code</label><b id="tFault">—</b><span>0 = nominal</span></div>
+        <div class="tcell"><label>Position</label><b style="font-size:16px">0.0°, 0.0°</b><span>sector HOME (from ring config)</span></div>
+        <div class="tcell"><label>Dupode power</label><b id="tPower" style="font-size:16px">—</b><span>drives the pole pulses above</span></div>
+      </div>
+
+      <div class="anom" id="anomBox"></div>
+
+      <div class="globe-tools">
+        <button class="secondary" id="stressBtn">Demo: stress spike</button>
+        <button class="secondary" id="calmBtn">Demo: back to baseline</button>
+      </div>
+
+      <h3 style="margin-top:18px">Radio context — recorded samples from data.csv</h3>
+      <p style="color:var(--muted);font-size:13.5px;margin-top:4px">These are the <b>two recorded radio samples</b> in the ring's <span class="mono">data.csv</span> — not a live network read. Step or play between them to see the serving cell change: RSRP stays at −99 dBm, above the −110 dBm weak-link threshold, so this data raises <b>no WEAK_LINK anomaly</b>.</p>
+      <div class="tgrid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="tcell"><label>Sample</label><b id="rWhen" style="font-size:14px">—</b><span id="rIdx">—</span></div>
+        <div class="tcell"><label>RAT · Band</label><b id="rRat" style="font-size:16px">—</b><span id="rFreq">—</span></div>
+        <div class="tcell"><label>RSRP / RSRQ / SINR</label><b id="rLevels" style="font-size:14px">—</b><span>threshold: RSRP &lt; −110 dBm flags WEAK_LINK</span></div>
+        <div class="tcell"><label>PCI · NCI</label><b id="rCell" style="font-size:14px">—</b><span id="rTac">—</span></div>
+      </div>
+      <p style="font-size:13.5px;margin-top:10px" id="cellChangeNote"></p>
+      <div class="globe-tools">
+        <button class="secondary" id="radioPrev">← Previous sample</button>
+        <button class="secondary" id="radioPlay">Play</button>
+        <button class="secondary" id="radioNext">Next sample →</button>
+      </div>
+
+      <h3 style="margin-top:18px">Request a dispatch</h3>
+      <p style="color:var(--muted);font-size:13.5px;margin-top:4px">This only creates a <b>PENDING</b> request waiting for supervisor approval — exactly like the service's approval queue. Nothing is sent, dispatched, or delivered.</p>
+      <div class="grid2" style="margin-top:10px">
+        <div><label class="f" for="dispType" style="margin-top:0">Resource</label>
+          <select id="dispType"><option>WELFARE_CHECK</option><option>COMMS_RELAY</option><option>BATTERY_DROP</option><option>MEDICAL_ASSIST</option></select></div>
+        <div><label class="f" for="dispPri" style="margin-top:0">Priority</label>
+          <select id="dispPri"><option>ROUTINE</option><option selected>URGENT</option><option>CRITICAL</option></select></div>
+      </div>
+      <label class="f" for="dispNotes">Notes (optional)</label>
+      <input id="dispNotes" maxlength="300" placeholder="e.g. Stress flag on the ring feed — please check in"/>
+      <button class="gold" id="dispBtn" style="margin-top:12px">Create PENDING dispatch request</button>
+      <div id="dispList"></div>
+    </div>
+    <p id="telemetryEmpty" style="color:var(--muted);font-size:14px;margin-top:12px">Consent is inactive, so there is nothing to show. Grant consent above to start the demo frame stream for SELF-4179.</p>
+  </section>
+
+  <section class="card" style="margin-top:16px" aria-label="Ring Bridge — signal transduction chain">
+    <div class="globe-head">
+      <div>
+        <h2>Ring Bridge — how a ring reading becomes a frame</h2>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px">Same chain as <span class="mono">ring_bridge.py</span>, now running live in the browser when you connect above: BLE GATT → <span class="mono">0x2A37</span> decode → rolling RMSSD → StressProxy → <span class="mono">0x2A19</span> battery → radio context → fused frame. When live is connected the steps below show the <b>real notifications</b>; otherwise they show the demo values and are labelled demo. The local Python bridge + WebSocket service still runs on your own computer if you prefer that path — this page doesn't replace it.</p>
+      </div>
+      <span class="pill" id="bridgeLivePill">DEMO · LIVE NOT CONNECTED</span>
+    </div>
+
+    <div class="chain">
+      <div class="cstep"><div class="cdot">1</div><div class="cbody"><b>Ring — BLE GATT notifications</b><p>The ring pushes notifications over Bluetooth Low Energy. The bridge holds the one BLE connection (see the notes below).</p><div class="cval" id="bStep1">Waiting for consent…</div></div></div>
+      <div class="cstep"><div class="cdot">2</div><div class="cbody"><b>HeartRateTransducer — 0x2A37 → bpm + RR intervals</b><p>Decodes the standard Heart Rate Measurement characteristic: a flags byte, the bpm value, and any RR intervals in units of 1/1024 s.</p><div class="cval" id="bStep2">—</div></div></div>
+      <div class="cstep"><div class="cdot">3</div><div class="cbody"><b>HrvTransducer — RR intervals → RMSSD</b><p>Rolling RMSSD over the last 60 RR intervals. It needs at least 8 intervals before it reports a value at all.</p><div class="cval" id="bStep3">—</div></div></div>
+      <div class="cstep"><div class="cdot">4</div><div class="cbody"><b>StressProxy — bpm + RMSSD → 0…1</b><p>0.6 × heart-rate part (bpm above resting 62) + 0.4 × HRV part (RMSSD below baseline 45). A relative-load <b>proxy — not a clinical measure</b>.</p><div class="cval" id="bStep4">—</div></div></div>
+      <div class="cstep"><div class="cdot">5</div><div class="cbody"><b>BatteryTransducer — 0x2A19 → percent</b><p>Reads the standard Battery Level characteristic as a plain percentage.</p><div class="cval" id="bStep5">—</div></div></div>
+      <div class="cstep"><div class="cdot">6</div><div class="cbody"><b>RadioCsvTransducer — newest row of data.csv</b><p>Reads the phone's cell log so radio context rides along with the body signals. In this demo it serves the two recorded samples from the Telemetry panel.</p><div class="cval" id="bStep6">—</div></div></div>
+      <div class="cstep"><div class="cdot">7</div><div class="cbody"><b>Fusion → TelemetryFrame JSON → WebSocket ingest</b><p>Everything merges into one frame, sent to <span class="mono">ws://127.0.0.1:8000/ws/telemetry-stream</span>. Frames older than 15 s are not sent — the bridge sends nothing rather than stale values. A <span class="mono">REJECTED</span> reply means consent isn't active: grant consent first.</p><pre class="framejson" id="frameJson">No frame — consent is inactive, so the bridge has nothing to fuse.</pre></div></div>
+    </div>
+
+    <h3 style="margin-top:6px">Bridge commands (run on your own computer)</h3>
+    <div class="cmdbox">python ring_bridge.py scan &nbsp;·&nbsp; python ring_bridge.py inspect &nbsp;·&nbsp; python ring_bridge.py stream [--grant-self]</div>
+    <div style="margin-top:12px;display:grid;gap:8px;font-size:14px">
+      <p>• <b>Close the vendor app first</b> — most rings accept only one BLE connection at a time.</p>
+      <p>• <b>Windows / Linux</b> connect by MAC address: <span class="mono">07:32:00:0A:41:79</span>. <b>macOS</b> hides MACs and uses a UUID instead — run <span class="mono">scan</span> and put the UUID in the config as the address.</p>
+      <p>• If <span class="mono">inspect</span> shows no standard heart-rate service (0x180D), the ring uses vendor-specific characteristics — add their UUIDs to <span class="mono">custom_map</span> in the ring config. This ring's <span class="mono">custom_map</span> is currently empty.</p>
+      <p>• <span class="mono">stream --grant-self</span> grants this ring's own consent scopes (heart_rate, device) before streaming; without consent the service replies <span class="mono">REJECTED</span> and stores nothing.</p>
+    </div>
+  </section>
+
+  <div class="bottom">
+    <section class="card">
+      <h2>Gateway</h2>
+      <p style="color:var(--muted);font-size:14px;margin-top:6px">Local demo only — no email or SMS is sent and there is no account server. This confirms you can read a code shown in this browser, not your real address.</p>
+      <label class="f" for="gwName">Display / business name</label>
+      <input id="gwName" placeholder="Same as above, or different"/>
+      <label class="f" for="gwContact">Email or phone (shown on screen only)</label>
+      <input id="gwContact" placeholder="you@example.com"/>
+      <button class="gold" id="sendCodeBtn" style="margin-top:14px;width:100%">Show demo code</button>
+      <div id="codeArea" style="display:none;margin-top:14px">
+        <p style="font-size:13px;color:var(--muted);text-align:center">Demo code (shown here — nothing was actually sent):</p>
+        <div class="codebox" style="margin-top:8px"><b id="demoCode">------</b></div>
+        <label class="f" for="codeInput">Enter the code</label>
+        <input id="codeInput" inputmode="numeric" placeholder="6-digit code" maxlength="6" style="text-align:center;letter-spacing:.3em;font-size:20px;font-family:'IBM Plex Mono',monospace"/>
+        <button id="verifyBtn" style="margin-top:10px;width:100%">Verify code</button>
+      </div>
+      <div class="msg" id="gwMsg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Avatar emblem compiler</h2>
+      <p style="color:var(--muted);font-size:14px;margin-top:6px">Not generative AI. Text maps known keywords to simple shapes; an image becomes a brightness heightmap. Both run in this browser only.</p>
+      <label class="f" for="emblemText">Describe the emblem (try: crystal wing spike ring gold)</label>
+      <input id="emblemText" value="crystal wing spike ring gold"/>
+      <div class="chips" id="chips"></div>
+      <div class="emblem-stage">
+        <div>
+          <div class="emblem-box"><svg id="emblemSvg" viewBox="0 0 200 200" style="width:100%;height:100%"></svg></div>
+          <button class="secondary" id="downloadEmblem" style="width:100%;margin-top:10px">Download emblem SVG</button>
+          <p style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center" id="emblemReadout">—</p>
+        </div>
+        <div>
+          <label class="f" style="margin-top:0">Or upload an image → heightmap</label>
+          <input type="file" id="imgUpload" accept="image/*"/>
+          <canvas id="heightmap" width="480" height="360" style="margin-top:10px"></canvas>
+          <p style="font-size:13px;color:var(--muted);margin-top:8px">Bright areas rise, dark areas sink. Upload a logo, face, or terrain photo to see it as relief. Without an upload, the emblem text drives a pattern here.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>Capsulecraft Global Map — everything on this page runs locally in your browser. No account, no tracking, no server.</footer>
+</div>
+
+<script>
+// ---------- State ----------
+var state={rotLon:-10,rotLat:18,avLon:-0.12,avLat:51.5,spinning:true,showNight:true,showAxis:true,heading:0,code:null,mode:'union',bpm:62,pulseOn:false,welfare:false};
+var continents=[
+[[-168,66],[-140,70],[-125,72],[-110,68],[-95,69],[-85,66],[-80,73],[-75,62],[-65,50],[-55,47],[-70,42],[-75,38],[-80,32],[-81,26],[-84,30],[-90,21],[-97,16],[-105,20],[-110,24],[-117,33],[-125,40],[-125,49],[-132,56],[-152,60]],
+[[-77,7],[-70,11],[-62,10],[-52,5],[-44,-3],[-35,-8],[-40,-20],[-48,-28],[-58,-35],[-65,-41],[-68,-50],[-70,-54],[-73,-50],[-73,-37],[-71,-20],[-70,-18],[-77,-12],[-80,-5],[-80,1]],
+[[-17,15],[-10,29],[0,35],[10,37],[11,34],[20,32],[32,31],[35,28],[38,22],[43,12],[51,12],[48,5],[42,-5],[40,-15],[36,-22],[32,-29],[25,-34],[18,-32],[15,-27],[13,-18],[12,-10],[9,-1],[9,4],[-8,5],[-13,8]],
+[[-9,43],[-9,48],[-2,49],[0,51],[5,53],[8,55],[18,56],[24,58],[28,60],[30,65],[45,66],[68,69],[95,72],[125,72],[155,70],[170,66],[178,65],[170,60],[162,58],[156,52],[142,50],[140,40],[135,35],[129,33],[122,31],[120,25],[110,20],[108,15],[103,7],[100,8],[95,16],[88,22],[80,13],[77,8],[72,20],[66,25],[57,26],[50,26],[43,33],[36,36],[27,37],[19,40],[12,44],[3,42],[0,39],[-2,37],[-9,37]],
+[[113,-22],[114,-28],[115,-34],[124,-33],[132,-32],[135,-35],[140,-38],[145,-38],[150,-37],[153,-30],[153,-25],[146,-19],[142,-11],[140,-18],[136,-12],[132,-11],[126,-14],[117,-20]],
+[[167,-45],[172,-41],[174,-38],[176,-38],[174,-42],[169,-46],[166,-46]],
+[[130,31],[133,34],[137,35],[140,36],[141,40],[141,45],[138,44],[135,39],[132,33]]
+];
+function rad(d){return d*Math.PI/180} function deg(r){return r*180/Math.PI}
+function project(lon,lat,cLon,cLat,R,cx,cy){
+  var lo=rad(lon-cLon), la=rad(lat), cl=rad(cLat);
+  var x=Math.cos(la)*Math.sin(lo), y=Math.sin(la)*Math.cos(cl)-Math.cos(la)*Math.cos(lo)*Math.sin(cl), z=Math.sin(la)*Math.sin(cl)+Math.cos(la)*Math.cos(lo)*Math.cos(cl);
+  if(z< -0.02) return null;
+  var sx=Math.cos(la)*Math.sin(lo); // recompute properly below
+  // orthographic with tilt:
+  var cosc=Math.sin(cl)*Math.sin(la)+Math.cos(cl)*Math.cos(la)*Math.cos(lo);
+  if(cosc<0) return null;
+  var px=cx+R*Math.cos(la)*Math.sin(lo);
+  var py=cy-R*(Math.cos(cl)*Math.sin(la)-Math.sin(cl)*Math.cos(la)*Math.cos(lo));
+  return [px,py,cosc];
+}
+function sunPos(){
+  var now=new Date(); var start=new Date(now.getFullYear(),0,0); var doy=Math.floor((now-start)/86400000);
+  var decl=-23.44*Math.cos(rad(360/365*(doy+10)));
+  var utcH=now.getUTCHours()+now.getUTCMinutes()/60+now.getUTCSeconds()/3600;
+  var lon=180-utcH*15; if(lon>180)lon-=360;
+  return {lat:decl,lon:lon};
+}
+function fmtLat(lat){return Math.abs(lat).toFixed(1)+'° '+(lat>=0?'N':'S')}
+function fmtLon(lon){return Math.abs(lon).toFixed(1)+'° '+(lon>=0?'E':'W')}
+function normLon(lon){ while(lon>180)lon-=360; while(lon<-180)lon+=360; return lon; }
+function antipodeOf(lat,lon){ return {lat:-lat, lon:normLon(lon+180)}; }
+function sunElevAt(lat,lon,sun){
+  var dLat=rad(lat-sun.lat), dLon=rad(lon-sun.lon);
+  var a=Math.sin(dLat/2)**2+Math.cos(rad(sun.lat))*Math.cos(rad(lat))*Math.sin(dLon/2)**2;
+  return 90-deg(2*Math.asin(Math.min(1,Math.sqrt(a))));
+}
+function sunLabel(elev){ return elev>0 ? 'Day · sun '+elev.toFixed(0)+'° up' : 'Night · sun '+Math.abs(elev).toFixed(0)+'° below the horizon'; }
+
+// ---------- Globe ----------
+var canvas=document.getElementById('globe'), ctx=canvas.getContext('2d');
+var dragging=false,lastX=0,lastY=0,moved=false;
+function drawGlobe(){
+  var W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,R=W*0.42;
+  ctx.clearRect(0,0,W,H);
+  var sun=sunPos();
+  // Dupode power pulse — driven by ring heart rate when telemetry consent is active
+  var beat=(Date.now()/1000)*(state.bpm/60)*Math.PI*2;
+  var pScale=state.pulseOn?1+0.32*Math.sin(beat):1;
+  var aScale=state.pulseOn?(state.mode==='union'?pScale:1+0.32*Math.sin(beat+Math.PI)):1;
+  var pulseCol=state.welfare?'rgba(220,38,38,':'rgba(56,189,248,';
+  // ocean
+  var g=ctx.createRadialGradient(cx-R*0.3,cy-R*0.3,R*0.1,cx,cy,R);
+  g.addColorStop(0,'#3a7ca5'); g.addColorStop(1,'#162f4a');
+  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+  ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.clip();
+  // graticule
+  ctx.strokeStyle='rgba(255,255,255,0.13)'; ctx.lineWidth=1;
+  for(var la=-60;la<=60;la+=30){ctx.beginPath(); for(var lo=-180;lo<=180;lo+=4){var p=project(lo,la,state.rotLon,state.rotLat,R,cx,cy); if(!p){ctx.moveTo(0,-999);continue} if(lo===-180)ctx.moveTo(p[0],p[1]); else ctx.lineTo(p[0],p[1]);} ctx.stroke();}
+  for(var lo2=-180;lo2<180;lo2+=30){ctx.beginPath(); for(var la2=-85;la2<=85;la2+=4){var p2=project(lo2,la2,state.rotLon,state.rotLat,R,cx,cy); if(!p2)continue; if(la2===-85)ctx.moveTo(p2[0],p2[1]); else ctx.lineTo(p2[0],p2[1]);} ctx.stroke();}
+  // continents
+  continents.forEach(function(poly){
+    ctx.beginPath(); var started=false;
+    poly.forEach(function(pt){var p=project(pt[0],pt[1],state.rotLon,state.rotLat,R,cx,cy); if(!p){started=false;return} if(!started){ctx.moveTo(p[0],p[1]);started=true}else ctx.lineTo(p[0],p[1]);});
+    ctx.closePath(); ctx.fillStyle='#7fb069'; ctx.globalAlpha=0.92; ctx.fill(); ctx.globalAlpha=1; ctx.strokeStyle='rgba(0,0,0,0.25)'; ctx.stroke();
+  });
+  // night shading: darken points away from sun
+  if(state.showNight){
+    // draw terminator shading by sampling
+    ctx.fillStyle='rgba(5,10,25,0.42)';
+    // approximate night hemisphere as circle offset opposite sun projection
+    var sp=project(sun.lon,sun.lat,state.rotLon,state.rotLat,R,cx,cy);
+    // Use pixel manipulation-free approach: overlay radial dark on anti-sun side
+    if(sp){
+      var dx=cx-sp[0], dy=cy-sp[1]; var len=Math.hypot(dx,dy)||1;
+      var nx=cx+dx/len*R*0.55, ny=cy+dy/len*R*0.55;
+      var ng=ctx.createRadialGradient(nx,ny,R*0.1,nx,ny,R*1.15);
+      ng.addColorStop(0,'rgba(3,8,20,0.55)'); ng.addColorStop(0.6,'rgba(3,8,20,0.28)'); ng.addColorStop(1,'rgba(3,8,20,0)');
+      ctx.fillStyle=ng; ctx.fillRect(cx-R,cy-R,R*2,R*2);
+    } else {
+      ctx.fillStyle='rgba(3,8,20,0.38)'; ctx.fillRect(cx-R,cy-R,R*2,R*2);
+    }
+  }
+  // dipole: anti-pole marker + axis through the centre
+  var anti=antipodeOf(state.avLat,state.avLon);
+  var apP=project(state.avLon,state.avLat,state.rotLon,state.rotLat,R,cx,cy);
+  var npP=project(anti.lon,anti.lat,state.rotLon,state.rotLat,R,cx,cy);
+  if(state.showAxis){
+    var visP=apP||npP;
+    if(visP){
+      var ghostP=[2*cx-visP[0],2*cy-visP[1]];
+      ctx.beginPath(); ctx.moveTo(visP[0],visP[1]); ctx.lineTo(ghostP[0],ghostP[1]); ctx.strokeStyle='rgba(125,211,252,0.75)'; ctx.lineWidth=2; ctx.setLineDash([7,6]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(cx,cy,4,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.fill();
+      // hollow dashed marker = the far-side end of the dipole, seen through the globe
+      ctx.beginPath(); ctx.arc(ghostP[0],ghostP[1],8,0,Math.PI*2); ctx.strokeStyle=apP?'rgba(56,189,248,0.95)':'rgba(242,201,76,0.95)'; ctx.lineWidth=2; ctx.setLineDash([3,3]); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+  if(npP){
+    ctx.beginPath(); ctx.arc(npP[0],npP[1],22*aScale,0,Math.PI*2); ctx.strokeStyle=pulseCol+'0.55)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(npP[0],npP[1],9*aScale,0,Math.PI*2); ctx.fillStyle=state.welfare?'#ef4444':'#38bdf8'; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(npP[0],npP[1],3,0,Math.PI*2); ctx.fillStyle='#082f49'; ctx.fill();
+    ctx.font='700 15px "Public Sans",sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillStyle='#bae6fd'; ctx.fillText('anti-pole',npP[0],npP[1]-16);
+  }
+  // receptive reach circle around avatar (approx as ring)
+  var ap=project(state.avLon,state.avLat,state.rotLon,state.rotLat,R,cx,cy);
+  if(ap){
+    var reachKm=parseInt(document.getElementById('reachRange').value,10);
+    var rr=R*(reachKm/20037)*Math.PI*0.55; if(rr<14)rr=14; if(rr>R*0.9)rr=R*0.9;
+    ctx.beginPath(); ctx.arc(ap[0],ap[1],rr,0,Math.PI*2); ctx.strokeStyle='rgba(242,201,76,0.85)'; ctx.lineWidth=2; ctx.setLineDash([6,5]); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(ap[0],ap[1],10*pScale,0,Math.PI*2); ctx.fillStyle=state.welfare?'#ef4444':'#f2c94c'; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(ap[0],ap[1],3.5,0,Math.PI*2); ctx.fillStyle='#17201c'; ctx.fill();
+  }
+  // sun marker
+  var s2=project(sun.lon,sun.lat,state.rotLon,state.rotLat,R,cx,cy);
+  if(s2){ctx.font='26px serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('☀️',s2[0],s2[1]);}
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.5; ctx.stroke();
+  // readouts
+  document.getElementById('lookInfo').textContent=fmtLat(state.rotLat)+', '+fmtLon(state.rotLon);
+  document.getElementById('avatarCoords').textContent=fmtLat(state.avLat)+', '+fmtLon(state.avLon);
+  document.getElementById('avLat').textContent=fmtLat(state.avLat);
+  document.getElementById('avLon').textContent=fmtLon(state.avLon);
+  document.getElementById('antiLat').textContent=fmtLat(anti.lat);
+  document.getElementById('antiLon').textContent=fmtLon(anti.lon);
+  document.getElementById('dupPoleCoords').textContent=fmtLat(state.avLat)+', '+fmtLon(state.avLon);
+  document.getElementById('dupAntiCoords').textContent=fmtLat(anti.lat)+', '+fmtLon(anti.lon);
+  document.getElementById('dupPoleSun').textContent=sunLabel(sunElevAt(state.avLat,state.avLon,sun));
+  document.getElementById('dupAntiSun').textContent=sunLabel(sunElevAt(anti.lat,anti.lon,sun));
+  document.getElementById('dupFacing').textContent=apP?'Facing you now: the pole (gold dot). The anti-pole is on the far side — follow the dashed axis.':'Facing you now: the anti-pole (blue dot). Your avatar is on the far side — follow the dashed axis.';
+  var arm=document.getElementById('dipoleArm'); if(arm) arm.setAttribute('transform','rotate('+(-state.avLat*0.6).toFixed(1)+' 320 75)');
+  var isDay = ap!==null;
+  document.getElementById('dayNightPill').textContent = isDay ? 'Avatar in view' : 'Avatar on far side — spin to find the gold dot';
+  // sun at avatar: angular distance
+  var dLat=rad(state.avLat-sun.lat), dLon=rad(state.avLon-sun.lon);
+  var a=Math.sin(dLat/2)**2+Math.cos(rad(sun.lat))*Math.cos(rad(state.avLat))*Math.sin(dLon/2)**2;
+  var dist=2*Math.asin(Math.sqrt(a))*6371;
+  var elev=90-deg(2*Math.asin(Math.sqrt(a)));
+  document.getElementById('sunInfo').textContent = elev>0 ? 'Day · '+elev.toFixed(0)+'° up' : 'Night · '+Math.abs(elev).toFixed(0)+'° below';
+  document.getElementById('sunSub').textContent='Subsolar '+fmtLat(sun.lat)+', '+fmtLon(sun.lon)+' · '+Math.round(dist).toLocaleString()+' km away';
+}
+function loop(){ if(state.spinning && !dragging){ state.rotLon+=0.06; if(state.rotLon>180)state.rotLon-=360; state.heading=(state.heading+0.06+360)%360; updateCompass(); } drawGlobe(); requestAnimationFrame(loop); }
+canvas.addEventListener('pointerdown',function(e){dragging=true;moved=false;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',function(e){ if(!dragging)return; var dx=e.clientX-lastX, dy=e.clientY-lastY; if(Math.abs(dx)+Math.abs(dy)>3)moved=true; state.rotLon-=dx*0.35; state.rotLat=Math.max(-75,Math.min(75,state.rotLat+dy*0.3)); if(state.rotLon>180)state.rotLon-=360; if(state.rotLon<-180)state.rotLon+=360; state.heading=(state.rotLon+180+360)%360; lastX=e.clientX;lastY=e.clientY; updateCompass(); });
+canvas.addEventListener('pointerup',function(e){ dragging=false; if(!moved){ // click to place avatar: invert projection approx using center
+    var rect=canvas.getBoundingClientRect(); var x=(e.clientX-rect.left)/rect.width*canvas.width, y=(e.clientY-rect.top)/rect.height*canvas.height;
+    var cx=canvas.width/2, cy=canvas.height/2, R=canvas.width*0.42; var nx=(x-cx)/R, ny=(cy-y)/R; var r2=nx*nx+ny*ny; if(r2<=1){ var lat=deg(Math.asin((ny*Math.cos(rad(state.rotLat))+Math.sqrt(1-r2)*Math.sin(rad(state.rotLat))))); var lon=state.rotLon+deg(Math.atan2(nx, Math.sqrt(1-r2)*Math.cos(rad(state.rotLat))-ny*Math.sin(rad(state.rotLat)))); if(lon>180)lon-=360; if(lon<-180)lon+=360; state.avLat=Math.max(-85,Math.min(85,lat)); state.avLon=lon; updateIdentity(); }
+  }});
+document.getElementById('spinBtn').addEventListener('click',function(){state.spinning=!state.spinning; this.textContent=state.spinning?'Pause spin':'Resume spin';});
+document.getElementById('sunBtn').addEventListener('click',function(){var s=sunPos(); state.rotLon=s.lon; state.rotLat=s.lat;});
+document.getElementById('homeBtn').addEventListener('click',function(){state.rotLon=state.avLon; state.rotLat=state.avLat;});
+document.getElementById('nightBtn').addEventListener('click',function(){state.showNight=!state.showNight;});
+function goToAnti(){ var a=antipodeOf(state.avLat,state.avLon); state.rotLon=a.lon; state.rotLat=a.lat; }
+function syncAxisBtns(){ var t=state.showAxis?'Hide dipole axis':'Show dipole axis'; document.getElementById('axisBtn').textContent=t; document.getElementById('dupAxisBtn').textContent=t; }
+function toggleAxis(){ state.showAxis=!state.showAxis; syncAxisBtns(); }
+document.getElementById('antiBtn').addEventListener('click',goToAnti);
+document.getElementById('dupGoAnti').addEventListener('click',goToAnti);
+document.getElementById('dupGoPole').addEventListener('click',function(){state.rotLon=state.avLon; state.rotLat=state.avLat;});
+document.getElementById('axisBtn').addEventListener('click',toggleAxis);
+document.getElementById('dupAxisBtn').addEventListener('click',toggleAxis);
+document.getElementById('flipBtn').addEventListener('click',function(){
+  // if the pole is the end currently facing us, flip to the anti-pole, and back
+  var dLon=Math.abs(normLon(state.rotLon-state.avLon)), dLat=Math.abs(state.rotLat-state.avLat);
+  if(dLon<90 && dLat<60){ goToAnti(); } else { state.rotLon=state.avLon; state.rotLat=state.avLat; }
+});
+
+// ---------- Clock ----------
+function tick(){ var n=new Date(); var s=n.toISOString().slice(11,19); document.getElementById('heroClock').textContent=s; document.getElementById('statClock').textContent=s+' UTC'; document.getElementById('heroDate').textContent=n.toUTCString().slice(0,16); }
+setInterval(tick,1000); tick();
+
+// ---------- Identity ----------
+function hashStr(str){var h=5381; for(var i=0;i<str.length;i++){h=((h<<5)+h+str.charCodeAt(i))>>>0} return h}
+function addrFor(name,mark,lat,lon){
+  var seed=(name+'|'+mark+'|'+lat.toFixed(2)+'|'+lon.toFixed(2));
+  var h1=hashStr(seed), h2=hashStr(seed.split('').reverse().join(''));
+  var hex='#'+h1.toString(16).toUpperCase().padStart(8,'0')+'-'+h2.toString(16).toUpperCase().padStart(8,'0');
+  var n=h1*100000+h2; var non=''; var tmp=n; if(tmp===0)non='0'; while(tmp>0){non=(tmp%9)+non; tmp=Math.floor(tmp/9)}
+  return {hex:hex, nonary:non.split('').join(' ')+'  (base-9)'};
+}
+function updateIdentity(){
+  var name=document.getElementById('bizName').value||'Capsulecraft';
+  document.getElementById('displayNameTitle').textContent=name;
+  var mark=document.getElementById('markInput').value.trim().toLowerCase();
+  var emojiMap={globe:'🌐',compass:'🧭',crystal:'🔮',star:'⭐',sun:'☀️',moon:'🌙',leaf:'🍃',wave:'🌊'};
+  document.getElementById('orbIcon').textContent=emojiMap[mark]|| (mark.length<=2?mark:'🧭');
+  var poleAddr=addrFor(name,mark,state.avLat,state.avLon);
+  document.getElementById('hexAddr').textContent=poleAddr.hex;
+  document.getElementById('nonaryAddr').textContent=poleAddr.nonary;
+  document.getElementById('dupPoleHex').textContent=poleAddr.hex;
+  document.getElementById('dupPoleNonary').textContent=poleAddr.nonary;
+  var antiNow=antipodeOf(state.avLat,state.avLon);
+  var antiAddr=addrFor(name,mark+'-anti',antiNow.lat,antiNow.lon);
+  document.getElementById('dupAntiHex').textContent=antiAddr.hex;
+  document.getElementById('dupAntiNonary').textContent=antiAddr.nonary;
+  var ang=parseInt(document.getElementById('angleRange').value,10); document.getElementById('angleVal').textContent=ang+'°';
+  var reach=parseInt(document.getElementById('reachRange').value,10); document.getElementById('reachVal').textContent=reach.toLocaleString()+' km';
+  // cone
+  var a1=rad(-90-ang/2), a2=rad(-90+ang/2); var r=46;
+  var x1=100+r*Math.cos(a1), y1=55+r*Math.sin(a1), x2=100+r*Math.cos(a2), y2=55+r*Math.sin(a2);
+  document.getElementById('conePath').setAttribute('d','M100,55 L'+x1+','+y1+' A46,46 0 '+(ang>180?1:0)+',1 '+x2+','+y2+' Z');
+  try{ if(typeof ENCAP!=='undefined' && ENCAP && typeof updateEncap==='function') updateEncap(); }catch(_){}
+}
+['bizName','markInput','angleRange','reachRange'].forEach(function(id){document.getElementById(id).addEventListener('input',updateIdentity)});
+updateIdentity();
+
+// ---------- Compass / BT / NFC ----------
+function compassDir(h){var dirs=['N','NE','E','SE','S','SW','W','NW']; return dirs[Math.round(h/45)%8]}
+function updateCompass(){ var h=((state.heading%360)+360)%360; document.getElementById('headingVal').textContent=Math.round(h)+'° '+compassDir(h); document.getElementById('dialNeedle').setAttribute('transform','rotate('+h+' 50 50)'); }
+updateCompass();
+document.getElementById('compassBtn').addEventListener('click',function(){
+  var st=document.getElementById('compassStatus'), det=document.getElementById('compassDetail');
+  if(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission().then(function(r){ st.textContent=r==='granted'?'Live — move your phone':'Permission declined — heading follows the globe'; }).catch(function(){st.textContent='Not available here — heading follows the globe';});
+  } else if(window.DeviceOrientationEvent){
+    window.addEventListener('deviceorientation',function(e){ if(e.alpha!==null){state.heading=360-e.alpha; updateCompass();}});
+    st.textContent='Live if this device has a compass sensor — otherwise heading follows the globe'; det.textContent='Listening for deviceorientation';
+  } else { st.textContent='No compass sensor in this browser — heading follows the globe as you spin it'; }
+  this.textContent='Compass on';
+});
+document.getElementById('btBtn').addEventListener('click',function(){ if(typeof connectLive==='function') connectLive(false); });
+document.getElementById('nfcBtn').addEventListener('click',function(){
+  var det=document.getElementById('nfcDetail');
+  if(!('NDEFReader' in window)){ det.textContent='Web NFC not supported here (needs Chrome on Android) · off'; return; }
+  det.textContent='Hold a tag near the device…';
+  try{ var r=new NDEFReader(); r.scan().then(function(){det.textContent='Scanning for NFC tags…';}); r.onreading=function(e){det.textContent='Tag read: '+(e.serialNumber||'unknown');}; }catch(err){ det.textContent='NFC scan failed on this device · off'; }
+});
+
+// ---------- Gateway ----------
+var gwMsg=document.getElementById('gwMsg');
+function showMsg(txt,ok){gwMsg.textContent=txt; gwMsg.className='msg show '+(ok?'ok':'warn');}
+document.getElementById('sendCodeBtn').addEventListener('click',function(){
+  var contact=document.getElementById('gwContact').value.trim();
+  if(!contact){ showMsg('Add an email or phone first — it is only shown on this screen, never sent anywhere.',false); return; }
+  state.code=String(Math.floor(100000+Math.random()*900000));
+  document.getElementById('demoCode').textContent=state.code;
+  document.getElementById('codeArea').style.display='block';
+  var nm=document.getElementById('gwName').value.trim(); if(nm){document.getElementById('bizName').value=nm; updateIdentity();}
+  showMsg('Demo code shown above. Nothing was sent to '+contact+'.',true);
+});
+document.getElementById('verifyBtn').addEventListener('click',function(){
+  var v=document.getElementById('codeInput').value.trim();
+  if(!state.code){showMsg('Generate a demo code first.',false);return;}
+  if(v===state.code){ showMsg('✓ Verified in this browser. Gateway demo complete — no account was created.',true); }
+  else showMsg('That code does not match the demo code above. Check the digits and try again.',false);
+});
+
+// ---------- Emblem compiler ----------
+var keywords=['crystal','wing','spike','ring','gold','silver','emerald','ruby','shield','star','wave','moon','sun','leaf','bolt','eye','tower','capsule'];
+var chipsEl=document.getElementById('chips');
+keywords.forEach(function(k){var s=document.createElement('span'); s.className='chip'; s.textContent=k; s.addEventListener('click',function(){var inp=document.getElementById('emblemText'); inp.value=(inp.value+' '+k).trim(); buildEmblem();}); chipsEl.appendChild(s);});
+function buildEmblem(){
+  var text=document.getElementById('emblemText').value.toLowerCase();
+  var has=function(k){return text.indexOf(k)>=0};
+  var main=has('gold')?'#d4a017':has('silver')?'#9aa5b1':has('emerald')?'#0f766e':has('ruby')?'#b91c1c':'#0f766e';
+  var accent=has('gold')?'#f2c94c':'#14b8a6';
+  var parts=[], labels=[];
+  if(has('ring')){parts.push('<circle cx="100" cy="100" r="82" fill="none" stroke="'+main+'" stroke-width="7"/><circle cx="100" cy="100" r="68" fill="none" stroke="'+accent+'" stroke-width="2" stroke-dasharray="5 6"/>'); labels.push('ring');}
+  if(has('shield')){parts.push('<path d="M100 32 L152 52 V104 C152 138 128 158 100 170 C72 158 48 138 48 104 V52 Z" fill="none" stroke="'+main+'" stroke-width="6"/>'); labels.push('shield');}
+  if(has('wing')){parts.push('<path d="M28 100 Q6 78 18 52 Q42 66 58 88 Z" fill="'+accent+'" opacity="0.9"/><path d="M172 100 Q194 78 182 52 Q158 66 142 88 Z" fill="'+accent+'" opacity="0.9"/>'); labels.push('wings');}
+  if(has('spike')){var spikes=''; for(var i=0;i<7;i++){var ang=-70+i*23; var x1=100+52*Math.cos(rad(ang-90)), y1=100+52*Math.sin(rad(ang-90)), x2=100+84*Math.cos(rad(ang-90)), y2=100+84*Math.sin(rad(ang-90)); spikes+='<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+main+'" stroke-width="5" stroke-linecap="round"/>';} parts.push(spikes); labels.push('spikes');}
+  if(has('star')){parts.push('<polygon points="100,38 112,78 154,78 120,102 133,144 100,118 67,144 80,102 46,78 88,78" fill="'+accent+'"/>'); labels.push('star');}
+  if(has('moon')){parts.push('<path d="M122 52 A52 52 0 1 0 122 148 A40 40 0 1 1 122 52" fill="'+main+'"/>'); labels.push('moon');}
+  if(has('sun')&&!has('moon')){parts.push('<circle cx="100" cy="100" r="30" fill="'+accent+'"/>'); labels.push('sun disc');}
+  if(has('wave')){parts.push('<path d="M42 132 Q66 112 90 132 T138 132 T186 132" fill="none" stroke="'+main+'" stroke-width="6" stroke-linecap="round" transform="translate(-14,0)"/>'); labels.push('wave');}
+  if(has('leaf')){parts.push('<path d="M100 58 C128 78 128 116 100 142 C72 116 72 78 100 58 Z" fill="#22c55e"/><line x1="100" y1="66" x2="100" y2="134" stroke="#14532d" stroke-width="3"/>'); labels.push('leaf');}
+  if(has('bolt')){parts.push('<polygon points="108,44 70,108 96,108 86,156 132,86 104,86" fill="#eab308"/>'); labels.push('bolt');}
+  if(has('eye')){parts.push('<ellipse cx="100" cy="100" rx="52" ry="30" fill="none" stroke="'+main+'" stroke-width="6"/><circle cx="100" cy="100" r="14" fill="'+main+'"/>'); labels.push('eye');}
+  if(has('tower')){parts.push('<rect x="84" y="52" width="32" height="96" rx="4" fill="'+main+'"/><polygon points="76,56 100,30 124,56" fill="'+accent+'"/>'); labels.push('tower');}
+  if(has('crystal')){parts.push('<polygon points="100,46 132,84 100,158 68,84" fill="'+main+'" opacity="0.92"/><polygon points="100,46 100,158 68,84" fill="#ffffff" opacity="0.22"/><line x1="68" y1="84" x2="132" y2="84" stroke="#fff" stroke-width="2" opacity="0.6"/>'); labels.push('crystal');}
+  if(has('capsule')||parts.length===0){ if(!has('crystal')&&!has('star')&&!has('moon')) parts.push('<rect x="72" y="52" width="56" height="96" rx="28" fill="'+main+'"/><line x1="72" y1="100" x2="128" y2="100" stroke="#fff" stroke-width="4"/>'); if(parts.length===0||has('capsule')) labels.push('capsule'); }
+  document.getElementById('emblemSvg').innerHTML=parts.join('');
+  document.getElementById('emblemReadout').textContent=labels.length?('Built from: '+labels.join(' + ')):'Capsule — add keywords like crystal, wing, ring, gold';
+  drawPatternHeightmap(text);
+}
+document.getElementById('emblemText').addEventListener('input',buildEmblem);
+document.getElementById('downloadEmblem').addEventListener('click',function(){
+  var svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">'+document.getElementById('emblemSvg').innerHTML+'</svg>';
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'})); a.download='capsulecraft-emblem.svg'; a.click(); setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+});
+// Heightmap
+var hm=document.getElementById('heightmap'), hmCtx=hm.getContext('2d');
+function drawPatternHeightmap(text){
+  var seed=hashStr(text||'capsule'); hmCtx.fillStyle='#0b1220'; hmCtx.fillRect(0,0,hm.width,hm.height);
+  for(var y=0;y<36;y++){for(var x=0;x<48;x++){ var v=Math.sin(x*0.35+seed%7)*Math.cos(y*0.3+seed%5)+Math.sin((x+y)*0.12); var h=(v+2)/4; var c=Math.floor(40+h*180); hmCtx.fillStyle='rgb('+(c*0.4)+','+c+','+(c*0.85)+')'; var bh=4+h*10; hmCtx.fillRect(x*10, y*10-bh+10, 9, bh); }}
+  hmCtx.fillStyle='rgba(255,255,255,0.75)'; hmCtx.font='12px monospace'; hmCtx.fillText('pattern relief — upload an image to replace',12,20);
+}
+document.getElementById('imgUpload').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f)return; var img=new Image();
+  img.onload=function(){ var off=document.createElement('canvas'); off.width=96; off.height=72; var octx=off.getContext('2d'); octx.drawImage(img,0,0,96,72); var data=octx.getImageData(0,0,96,72).data; hmCtx.fillStyle='#0b1220'; hmCtx.fillRect(0,0,hm.width,hm.height); var cw=hm.width/96, ch=hm.height/72;
+    for(var y=0;y<72;y++){for(var x=0;x<96;x++){var i=(y*96+x)*4; var b=(data[i]*0.3+data[i+1]*0.59+data[i+2]*0.11)/255; var lift=b*ch*2.2; hmCtx.fillStyle='rgb('+Math.floor(30+b*60)+','+Math.floor(60+b*160)+','+Math.floor(50+b*120)+')'; hmCtx.fillRect(x*cw, y*ch-lift+ch, cw-0.5, lift+1); }}
+    URL.revokeObjectURL(img.src); };
+  img.src=URL.createObjectURL(f);
+});
+// ---------- LIVE RING — Web Bluetooth (real GATT, no server) ----------
+var LIVE={device:null,server:null,hrChar:null,battChar:null,connected:false,connecting:false,bpm:null,rr:[],rmssd:null,battery:null,lastAt:null,rawHex:'',deviceName:'',deviceId:''};
+function liveSupported(){ return !!(navigator && navigator.bluetooth && typeof navigator.bluetooth.requestDevice==='function'); }
+function showLiveMsg(txt,ok){ var el=document.getElementById('liveMsg'); if(!el)return; el.textContent=txt; el.className='msg show '+(ok?'ok':'warn'); el.style.display='block'; }
+function computeRMSSDfromRR(rrMs){ if(!rrMs||rrMs.length<2) return null; var sum=0,n=0; for(var i=1;i<rrMs.length;i++){ var d=rrMs[i]-rrMs[i-1]; sum+=d*d; n++; } return n? Math.round(Math.sqrt(sum/n)*10)/10 : null; }
+function parseHeartRateValue(dv){
+  var flags=dv.getUint8(0); var idx=1; var bpm;
+  if(flags&0x01){ bpm=dv.getUint16(idx,true); idx+=2; } else { bpm=dv.getUint8(idx); idx+=1; }
+  var contact=null; if(flags&0x06){ contact=((flags>>1)&0x03)===3; }
+  var energy=null; if(flags&0x08){ energy=dv.getUint16(idx,true); idx+=2; }
+  var rrs=[]; if(flags&0x10){ while(idx+1<dv.byteLength){ var raw=dv.getUint16(idx,true); idx+=2; rrs.push(Math.round(raw*1000/1024*10)/10); } }
+  var bytes=[]; for(var i=0;i<dv.byteLength;i++) bytes.push(dv.getUint8(i).toString(16).padStart(2,'0'));
+  return {bpm:bpm,rrs:rrs,energy:energy,contact:contact,rawHex:bytes.join(' ')};
+}
+function syncLiveUI(){
+  var dot=document.getElementById('liveDot'), pill=document.getElementById('livePill'), st=document.getElementById('liveStatusText'), bpill=document.getElementById('bridgeLivePill');
+  var btDet=document.getElementById('btDetail');
+  if(!liveSupported()){ if(dot)dot.className='live-dot err'; if(pill)pill.textContent='WEB BLUETOOTH UNAVAILABLE'; if(st)st.textContent='Web Bluetooth is not available in this browser — try Chrome / Edge on desktop or Android, with Bluetooth on.'; if(btDet)btDet.textContent='Web Bluetooth unavailable in this browser · disconnected'; return; }
+  if(LIVE.connecting){ if(st)st.textContent='Opening Bluetooth picker — choose R01L 4179 / your ring…'; return; }
+  if(LIVE.connected){
+    if(dot)dot.className='live-dot on'; if(pill)pill.textContent='● LIVE CONNECTED'; if(bpill)bpill.textContent='● LIVE · REAL BLE NOTIFICATIONS';
+    if(st)st.textContent='Connected to '+(LIVE.deviceName||'ring')+' · '+(LIVE.deviceId||'')+' · GATT live — notifications streaming to this browser only.';
+    if(btDet)btDet.textContent='Live: '+(LIVE.deviceName||'ring')+' · '+(LIVE.bpm?LIVE.bpm+' bpm':'waiting for first HR notification');
+    document.getElementById('liveDisconnectBtn').disabled=false;
+  } else {
+    if(dot)dot.className='live-dot'; if(pill)pill.textContent='NOT CONNECTED'; if(bpill)bpill.textContent='DEMO · LIVE NOT CONNECTED';
+    if(st)st.textContent='Not connected. Demo stream is available below — connect to replace it with real ring data.';
+    if(btDet)btDet.textContent='Not connected · tap Connect live ring';
+    var db=document.getElementById('liveDisconnectBtn'); if(db)db.disabled=true;
+  }
+  if(LIVE.bpm!=null) document.getElementById('liveHr').textContent=LIVE.bpm+' bpm';
+  if(LIVE.rmssd!=null) document.getElementById('liveHrv').textContent=LIVE.rmssd.toFixed(1)+' ms';
+  document.getElementById('liveRrSub').textContent=LIVE.rr.length+' / 60 RR intervals · '+(LIVE.rr.length>=8?'minimum met':'needs ≥8 RR intervals');
+  if(LIVE.battery!=null) document.getElementById('liveBatt').textContent=LIVE.battery+' %';
+  if(LIVE.lastAt) document.getElementById('liveLast').textContent=new Date(LIVE.lastAt).toLocaleTimeString();
+  if(LIVE.rawHex) document.getElementById('liveRaw').textContent='raw 0x2A37: '+LIVE.rawHex;
+}
+function makeLiveFrame(){
+  var bpm=LIVE.bpm||RING.resting_bpm; var rmssd=LIVE.rmssd; var radio=RADIO_SAMPLES[T.radioIdx];
+  var stress=(rmssd==null? stressProxy(bpm, RING.baseline_rmssd_ms) : stressProxy(bpm, rmssd));
+  var f={ personnel_id:RING.personnel_id, timestamp:Date.now()/1000, spatial_vector:{lat:RING.lat,lon:RING.lon,altitude_m:0,sector:RING.sector},
+    biometric_indicators:{heart_rate_bpm:bpm,device_status_code:0,stress_index:stress,core_temp_c:null,spo2_pct:null,hrv_rmssd_ms:rmssd,skin_temp_c:null,steps:null},
+    operational_state:{status:'ACTIVE',battery_level_pct:(LIVE.battery!=null?LIVE.battery:T.battery),anomaly_flag:false,anomaly_reasons:[]},
+    radio:{rat:radio.rat,rsrp_dbm:radio.rsrp_dbm,rsrq_db:radio.rsrq_db,sinr_db:radio.sinr_db,band:radio.band,rx_mhz:radio.rx_mhz,tx_mhz:radio.tx_mhz,pci:radio.pci,nci:radio.nci,tac:radio.tac,mcc:radio.mcc,mnc:radio.mnc},
+    source:{type:'ble_ring_live_web_bluetooth',name:(LIVE.deviceName||RING.name),address:(LIVE.deviceId||RING.address),raw_2a37:LIVE.rawHex,rr_intervals_in_window:LIVE.rr.length} };
+  // anomalies only from live-available signals + radio
+  var reasons=[]; if(f.biometric_indicators.stress_index>0.75) reasons.push('HIGH_STRESS ('+f.biometric_indicators.stress_index.toFixed(2)+')'); if(f.operational_state.battery_level_pct<20) reasons.push('LOW_BATTERY ('+f.operational_state.battery_level_pct+'%)'); if(radio.rsrp_dbm<-110) reasons.push('WEAK_LINK');
+  f.operational_state.anomaly_reasons=reasons; f.operational_state.anomaly_flag=reasons.length>0; f.operational_state.status=reasons.length>0?'WELFARE_CHECK':'ACTIVE'; return f;
+}
+function onLiveHr(e){
+  try{ var parsed=parseHeartRateValue(e.target.value); LIVE.bpm=parsed.bpm; LIVE.rawHex=parsed.rawHex; LIVE.lastAt=Date.now();
+    parsed.rrs.forEach(function(rr){ LIVE.rr.push(rr); if(LIVE.rr.length>60)LIVE.rr.shift(); });
+    LIVE.rmssd=computeRMSSDfromRR(LIVE.rr); T.rrCount=LIVE.rr.length;
+    syncLiveUI();
+    if(T.consent){ T.frame=makeLiveFrame(); renderTelemetry(); }
+  }catch(err){ showLiveMsg('Could not decode a heart-rate notification: '+err.message,false); }
+}
+function onLiveDisconnected(){
+  LIVE.connected=false; LIVE.server=null; LIVE.hrChar=null; LIVE.battChar=null; syncLiveUI(); showLiveMsg('Ring disconnected. The GATT connection closed — reconnect to resume live streaming. Demo remains available.',false);
+  if(T.consent && T.timer){ /* demo timer will resume on next tick via makeFrame check */ }
+}
+async function connectLive(showAll){
+  if(!liveSupported()){ showLiveMsg('Web Bluetooth is not available here. Use Chrome or Edge on desktop / Android, turn Bluetooth on, and open this page there. Safari, Firefox and most in-app webviews cannot do live BLE.',false); syncLiveUI(); return; }
+  if(LIVE.connected){ showLiveMsg('Already live — connected to '+(LIVE.deviceName||'your ring')+'.',true); return; }
+  LIVE.connecting=true; syncLiveUI();
+  try{
+    var opts= showAll ? {acceptAllDevices:true, optionalServices:['heart_rate','battery_service','device_information',0x180D,0x180F]} : {filters:[{services:['heart_rate']}], optionalServices:['battery_service','device_information',0x180F]};
+    var device=await navigator.bluetooth.requestDevice(opts);
+    LIVE.device=device; LIVE.deviceName=device.name||'Unnamed BLE device'; LIVE.deviceId=device.id||'';
+    device.addEventListener('gattserverdisconnected', onLiveDisconnected);
+    showLiveMsg('Selected '+(device.name||device.id)+' — connecting to GATT…',true);
+    var server=await device.gatt.connect(); LIVE.server=server;
+    var hrService;
+    try{ hrService=await server.getPrimaryService('heart_rate'); }catch(e1){ hrService=await server.getPrimaryService(0x180D); }
+    var hrChar; try{ hrChar=await hrService.getCharacteristic('heart_rate_measurement'); }catch(e2){ hrChar=await hrService.getCharacteristic(0x2A37); }
+    LIVE.hrChar=hrChar; await hrChar.startNotifications(); hrChar.addEventListener('characteristicvaluechanged', onLiveHr);
+    // Battery — optional, many rings expose it
+    try{ var bSvc=await server.getPrimaryService('battery_service'); var bChar=await bSvc.getCharacteristic('battery_level'); LIVE.battChar=bChar; var bv=await bChar.readValue(); LIVE.battery=bv.getUint8(0); try{ await bChar.startNotifications(); bChar.addEventListener('characteristicvaluechanged',function(ev){ LIVE.battery=ev.target.value.getUint8(0); syncLiveUI(); if(T.consent){T.frame=makeLiveFrame(); renderTelemetry();} }); }catch(_){} }catch(_){ /* battery not exposed — leave as demo battery, labelled in UI */ }
+    LIVE.connected=true; LIVE.connecting=false; syncLiveUI();
+    showLiveMsg('● LIVE — connected to '+(LIVE.deviceName||'ring')+'. Heart-rate notifications are streaming in this browser. '+(T.consent?'Telemetry below is now using live HR/HRV.':'Grant consent below to stream live data into the Telemetry frame and Dupode pulse.'),true);
+    if(T.consent){ if(LIVE.bpm!=null){ T.frame=makeLiveFrame(); renderTelemetry(); } }
+    else { document.getElementById('telemetryEmpty').textContent='Live ring is connected. Grant consent above to stream its real heart rate into the Telemetry frame — without consent no frame is kept.'; }
+  }catch(err){
+    LIVE.connecting=false; syncLiveUI();
+    if(err && err.name==='NotFoundError'){ showLiveMsg('No ring was selected, or no device advertising the Heart Rate service was found. Make sure the ring is awake, nearby, not already connected to its vendor app, then try “Show all Bluetooth devices” and look for R01L 4179.',false); }
+    else if(err && err.name==='SecurityError'){ showLiveMsg('Bluetooth was blocked by the browser / iframe permissions. Open this page in a full Chrome / Edge tab (not an embedded webview) and try again.',false); }
+    else { showLiveMsg('Live connection failed: '+(err.message||err.name||'unknown error')+'. Check Bluetooth is on, the vendor app is closed, and the ring isn\u2019t connected elsewhere.',false); }
+  }
+}
+async function disconnectLive(){ try{ if(LIVE.hrChar){ try{await LIVE.hrChar.stopNotifications();}catch(_){} } if(LIVE.device && LIVE.device.gatt && LIVE.device.gatt.connected) LIVE.device.gatt.disconnect(); }catch(_){} LIVE.connected=false; syncLiveUI(); showLiveMsg('Disconnected from the live ring.',true); }
+document.getElementById('liveConnectBtn').addEventListener('click',function(){connectLive(false)});
+document.getElementById('liveAllBtn').addEventListener('click',function(){connectLive(true)});
+document.getElementById('liveDisconnectBtn').addEventListener('click',function(){disconnectLive()});
+
+// ---------- Ring config + Union / Opposite mode ----------
+var RING={name:'R01L 4179',address:'07:32:00:0A:41:79',personnel_id:'SELF-4179',sector:'HOME',lat:0.0,lon:0.0,scopes:['heart_rate','device'],resting_bpm:62,baseline_rmssd_ms:45,radio_csv:'data.csv',custom_map:{}};
+function setMode(m){
+  state.mode=m;
+  document.getElementById('modeUnion').classList.toggle('on',m==='union');
+  document.getElementById('modeOpposite').classList.toggle('on',m==='opposite');
+  var anti=document.getElementById('pulseAnti');
+  if(state.pulseOn){ anti.style.animationDelay=(m==='opposite'?(-30/state.bpm)+'s':'0s'); }
+  renderPower();
+}
+document.getElementById('modeUnion').addEventListener('click',function(){setMode('union')});
+document.getElementById('modeOpposite').addEventListener('click',function(){setMode('opposite')});
+function renderPower(){
+  var el=document.getElementById('powerReadout');
+  if(!state.pulseOn){ el.textContent='No telemetry yet — grant consent in the Telemetry panel below and both ends pulse from the ring\u2019s live heart rate.'; return; }
+  if(state.welfare){ el.textContent='WELFARE CHECK — telemetry anomaly. Both ends are holding a red alert pulse until the readings settle.'; return; }
+  el.textContent=(state.mode==='union'?'UNION':'OPPOSITE')+' · '+state.bpm+' bpm · RMSSD '+((T.frame&&T.frame.biometric_indicators.hrv_rmssd_ms!=null)?T.frame.biometric_indicators.hrv_rmssd_ms:'—')+' ms · '+((typeof LIVE!=='undefined'&&LIVE.connected)?'● LIVE ring · ':'')+(state.mode==='union'?'pole and anti-pole pulse together, in sync':'anti-pole pulses half a beat out of phase — mirrored against the pole');
+}
+
+// ---------- Telemetry (consent-first demo, mirrors the local Python service) ----------
+var RADIO_SAMPLES=[
+  {timestamp:'2026-11-15 04:24:00.000',rat:'NR SA',rsrp_dbm:-99,rsrq_db:-15,sinr_db:1,band:41,rx_mhz:2506.95,tx_mhz:2506.95,pci:531,nci:6448927021,tac:8222976,mcc:310,mnc:260},
+  {timestamp:'2026-11-15 04:24:01.000',rat:'NR SA',rsrp_dbm:-99,rsrq_db:-15,sinr_db:1,band:41,rx_mhz:2506.95,tx_mhz:2506.95,pci:89,nci:6448111919,tac:8222976,mcc:310,mnc:260}
+];
+var T={consent:false,frame:null,timer:null,radioIdx:0,radioTimer:null,spike:false,steps:4213,battery:87,rrCount:0,requests:[]};
+function stressProxy(bpm,rmssd){ // exactly the bridge's StressProxy: 0.6 HR + 0.4 HRV
+  var hr=Math.min(Math.max((bpm-RING.resting_bpm)/60,0),1);
+  var hv=rmssd==null?0:Math.min(Math.max(1-rmssd/RING.baseline_rmssd_ms,0),1);
+  return Math.round((0.6*hr+0.4*hv)*1000)/1000;
+}
+function anomaliesFor(f){
+  var b=f.biometric_indicators,o=f.operational_state,r=[];
+  if(b.stress_index>0.75)r.push('HIGH_STRESS ('+b.stress_index.toFixed(2)+')');
+  if(b.device_status_code!==0)r.push('DEVICE_FAULT_CODE ('+b.device_status_code+')');
+  if(b.core_temp_c!=null&&(b.core_temp_c>39.0||b.core_temp_c<35.0))r.push('THERMAL_EXCURSION ('+b.core_temp_c.toFixed(1)+'C)');
+  if(o.battery_level_pct<20)r.push('LOW_BATTERY ('+o.battery_level_pct.toFixed(1)+'%)');
+  if(b.spo2_pct!=null&&b.spo2_pct<92)r.push('LOW_SPO2 ('+Math.round(b.spo2_pct)+'%)');
+  if(f.radio&&f.radio.rsrp_dbm!=null&&f.radio.rsrp_dbm<-110)r.push('WEAK_LINK (RSRP '+Math.round(f.radio.rsrp_dbm)+' dBm)');
+  return r;
+}
+function jitter(base,spread){return base+(Math.random()*2-1)*spread}
+function makeFrame(){
+  if(typeof LIVE!=='undefined' && LIVE.connected && LIVE.bpm!=null){ return makeLiveFrame(); }
+  var bpm,rmssd;
+  if(T.spike){ bpm=Math.round(jitter(122,3)); rmssd=Math.round(jitter(14,2)*10)/10; }
+  else { bpm=Math.round(jitter(RING.resting_bpm,3)); rmssd=Math.round(jitter(RING.baseline_rmssd_ms,5)*10)/10; }
+  T.rrCount=Math.min(60,T.rrCount+Math.floor(Math.random()*5)+3);
+  T.steps+=Math.floor(Math.random()*4);
+  var radio=RADIO_SAMPLES[T.radioIdx];
+  var f={
+    personnel_id:RING.personnel_id, timestamp:Date.now()/1000,
+    spatial_vector:{lat:RING.lat,lon:RING.lon,altitude_m:0,sector:RING.sector},
+    biometric_indicators:{heart_rate_bpm:bpm,device_status_code:0,stress_index:stressProxy(bpm,rmssd),core_temp_c:Math.round(jitter(36.8,0.25)*10)/10,spo2_pct:Math.round(jitter(98,0.8)*10)/10,hrv_rmssd_ms:rmssd,skin_temp_c:Math.round(jitter(32.1,0.7)*10)/10,steps:T.steps},
+    operational_state:{status:'ACTIVE',battery_level_pct:T.battery,anomaly_flag:false,anomaly_reasons:[]},
+    radio:{rat:radio.rat,rsrp_dbm:radio.rsrp_dbm,rsrq_db:radio.rsrq_db,sinr_db:radio.sinr_db,band:radio.band,rx_mhz:radio.rx_mhz,tx_mhz:radio.tx_mhz,pci:radio.pci,nci:radio.nci,tac:radio.tac,mcc:radio.mcc,mnc:radio.mnc},
+    source:{type:'ble_ring',name:RING.name,address:RING.address}
+  };
+  var reasons=anomaliesFor(f);
+  f.operational_state.anomaly_reasons=reasons; f.operational_state.anomaly_flag=reasons.length>0;
+  f.operational_state.status=reasons.length>0?'WELFARE_CHECK':'ACTIVE';
+  return f;
+}
+function setCell(id,bad){document.getElementById(id).classList.toggle('flag',!!bad)}
+function renderTelemetry(){
+  var f=T.frame; if(!f)return;
+  var b=f.biometric_indicators,o=f.operational_state;
+  var isLive=(typeof LIVE!=='undefined' && LIVE.connected);
+  document.getElementById('tHr').textContent=b.heart_rate_bpm+' bpm'+(isLive?' ● LIVE':'');
+  document.getElementById('tHrv').textContent=(b.hrv_rmssd_ms==null?'— collecting RR':b.hrv_rmssd_ms.toFixed(1)+' ms');
+  document.getElementById('tStress').textContent=b.stress_index.toFixed(2)+' / 1';
+  document.getElementById('tStatus').textContent=o.status+(isLive?' · LIVE':'');
+  document.getElementById('tUpdated').textContent='frame '+new Date().toLocaleTimeString()+(isLive?' · ● LIVE Web Bluetooth — real ring':' · demo, in-browser');
+  document.getElementById('tCore').textContent=(b.core_temp_c==null?'—':b.core_temp_c.toFixed(1)+' °C');
+  document.getElementById('tSpo2').textContent=(b.spo2_pct==null?'—':b.spo2_pct.toFixed(0)+' %');
+  document.getElementById('tSkin').textContent=(b.skin_temp_c==null?'—':b.skin_temp_c.toFixed(1)+' °C');
+  document.getElementById('tSteps').textContent=(b.steps==null?'—':b.steps.toLocaleString());
+  document.getElementById('tBatt').textContent=o.battery_level_pct.toFixed(0)+' %'+(isLive&&LIVE.battery!=null?' ● LIVE':'');
+  document.getElementById('tFault').textContent=String(b.device_status_code);
+  document.getElementById('tPower').textContent=(state.mode==='union'?'UNION':'OPPOSITE')+(o.anomaly_flag?' · WELFARE':' · live pulse');
+  setCell('cellStress',b.stress_index>0.75); setCell('cellCore',b.core_temp_c!=null&&(b.core_temp_c>39||b.core_temp_c<35));
+  setCell('cellSpo2',b.spo2_pct!=null&&b.spo2_pct<92); setCell('cellBatt',o.battery_level_pct<20); setCell('cellFault',b.device_status_code!==0);
+  setCell('cellStatus',o.anomaly_flag);
+  var ab=document.getElementById('anomBox');
+  ab.className='anom show '+(o.anomaly_flag?'bad':'ok');
+  ab.textContent=o.anomaly_flag?('⚠ Anomaly — '+o.anomaly_reasons.join(' · ')):'✓ No anomalies — every reading is inside its threshold (stress ≤ 0.75 · core temp 35–39 °C · battery ≥ 20% · SpO₂ ≥ 92% · RSRP ≥ −110 dBm · fault code 0).';
+  // Dupode power feed
+  state.bpm=b.heart_rate_bpm; state.pulseOn=true; state.welfare=o.anomaly_flag;
+  var dur=(60/b.heart_rate_bpm).toFixed(2)+'s';
+  ['pulsePole','pulseAnti'].forEach(function(id){var d=document.getElementById(id); d.classList.add('pulsing'); d.style.animationDuration=dur; d.style.background=o.anomaly_flag?'#ef4444':'';});
+  document.getElementById('pulseAnti').style.animationDelay=state.mode==='opposite'?(-30/b.heart_rate_bpm)+'s':'0s';
+  document.getElementById('dupWelfare').classList.toggle('show',o.anomaly_flag);
+  renderPower(); renderBridge(f);
+}
+function renderBridge(f){
+  var b=f.biometric_indicators,o=f.operational_state,r=f.radio;
+  var isLiveB=(typeof LIVE!=='undefined' && LIVE.connected);
+  var rrMs=Math.round(60000/b.heart_rate_bpm);
+  document.getElementById('bStep1').textContent=isLiveB?('● LIVE BLE notification from '+(LIVE.deviceName||RING.name)+' ('+(LIVE.deviceId||RING.address)+') · heart-rate service 0x180D · real GATT connection in this browser'):('BLE notification received from '+RING.name+' ('+RING.address+') · heart-rate service 0x180D · demo data — connect live above for real notifications');
+  document.getElementById('bStep2').textContent=(isLiveB&&LIVE.rawHex?('raw 0x2A37 ['+LIVE.rawHex+'] → '):'raw 0x2A37 → ')+b.heart_rate_bpm+' bpm · RR intervals ≈ '+rrMs+' ms each (units of 1/1024 s on the wire)';
+  document.getElementById('bStep3').textContent='RMSSD '+(b.hrv_rmssd_ms==null?'— collecting':b.hrv_rmssd_ms.toFixed(1)+' ms')+' · '+T.rrCount+' / 60 RR intervals in the window'+(T.rrCount<8?' · below the 8-interval minimum — the real bridge would report nothing yet':' · minimum of 8 met');
+  var hrPart=Math.min(Math.max((b.heart_rate_bpm-RING.resting_bpm)/60,0),1), hvPart=b.hrv_rmssd_ms==null?0:Math.min(Math.max(1-b.hrv_rmssd_ms/RING.baseline_rmssd_ms,0),1);
+  document.getElementById('bStep4').textContent='stress = 0.6 × '+hrPart.toFixed(2)+' (HR above resting 62) + 0.4 × '+hvPart.toFixed(2)+' (HRV below baseline 45) = '+b.stress_index.toFixed(3)+' — a proxy, not a clinical measure';
+  document.getElementById('bStep5').textContent='0x2A19 → '+o.battery_level_pct.toFixed(0)+'% battery';
+  document.getElementById('bStep6').textContent='newest row: '+RADIO_SAMPLES[T.radioIdx].timestamp+' · '+r.rat+' · RSRP '+r.rsrp_dbm+' dBm · RSRQ '+r.rsrq_db+' dB · SINR '+r.sinr_db+' dB · band '+r.band+' · PCI '+r.pci+' · NCI '+r.nci;
+  document.getElementById('frameJson').textContent=JSON.stringify(f,null,2);
+}
+function renderRadio(){
+  var s=RADIO_SAMPLES[T.radioIdx], other=RADIO_SAMPLES[1-T.radioIdx];
+  document.getElementById('rWhen').textContent=s.timestamp;
+  document.getElementById('rIdx').textContent='sample '+(T.radioIdx+1)+' of 2 · from '+RING.radio_csv;
+  document.getElementById('rRat').textContent=s.rat+' · band '+s.band;
+  document.getElementById('rFreq').textContent='RX/TX '+s.rx_mhz.toFixed(2)+' MHz';
+  document.getElementById('rLevels').textContent=s.rsrp_dbm+' dBm / '+s.rsrq_db+' dB / '+s.sinr_db+' dB';
+  document.getElementById('rCell').textContent='PCI '+s.pci+' · NCI '+s.nci;
+  document.getElementById('rTac').textContent='TAC '+s.tac+' · MCC '+s.mcc+' · MNC '+s.mnc;
+  document.getElementById('cellChangeNote').innerHTML='Serving cell vs the other sample: <span class="cellchange">PCI '+other.pci+' → '+s.pci+'</span> and <span class="cellchange">NCI '+other.nci+' → '+s.nci+'</span> — the phone moved to a different cell between the two seconds, while RSRP / RSRQ / SINR, band, TAC, MCC and MNC stayed identical.';
+  if(T.frame){ T.frame=makeFrame(); renderTelemetry(); }
+}
+document.getElementById('radioPrev').addEventListener('click',function(){T.radioIdx=(T.radioIdx+RADIO_SAMPLES.length-1)%RADIO_SAMPLES.length; renderRadio();});
+document.getElementById('radioNext').addEventListener('click',function(){T.radioIdx=(T.radioIdx+1)%RADIO_SAMPLES.length; renderRadio();});
+document.getElementById('radioPlay').addEventListener('click',function(){
+  if(T.radioTimer){ clearInterval(T.radioTimer); T.radioTimer=null; this.textContent='Play'; }
+  else { var btn=this; T.radioTimer=setInterval(function(){T.radioIdx=(T.radioIdx+1)%RADIO_SAMPLES.length; renderRadio();},1500); btn.textContent='Pause'; }
+});
+document.getElementById('stressBtn').addEventListener('click',function(){T.spike=true; if(T.frame){T.frame=makeFrame(); renderTelemetry();}});
+document.getElementById('calmBtn').addEventListener('click',function(){T.spike=false; if(T.frame){T.frame=makeFrame(); renderTelemetry();}});
+document.getElementById('consentBtn').addEventListener('click',function(){
+  if(!T.consent){
+    T.consent=true; T.rrCount=0;
+    document.getElementById('consentPill').textContent='Consent: ACTIVE · scopes heart_rate, device';
+    this.textContent='Withdraw consent (purges the frame)';
+    document.getElementById('consentNote').textContent='Consent granted for SELF-4179 in this browser demo. Frames update every 2 s and exist only while this consent is active.';
+    document.getElementById('telemetryBody').style.display='block';
+    document.getElementById('telemetryEmpty').style.display='none';
+    T.frame=makeFrame(); renderRadio(); renderTelemetry();
+    T.timer=setInterval(function(){T.frame=makeFrame(); renderTelemetry();},2000);
+  } else {
+    T.consent=false; T.frame=null; T.spike=false;
+    if(T.timer){clearInterval(T.timer); T.timer=null;}
+    if(T.radioTimer){clearInterval(T.radioTimer); T.radioTimer=null; document.getElementById('radioPlay').textContent='Play';}
+    state.pulseOn=false; state.welfare=false; state.bpm=RING.resting_bpm;
+    document.getElementById('consentPill').textContent='Consent: inactive';
+    this.textContent='Grant consent for SELF-4179';
+    document.getElementById('consentNote').textContent='Consent withdrawn — the displayed frame has been purged, mirroring the service\u2019s withdraw-and-purge rule.';
+    document.getElementById('telemetryBody').style.display='none';
+    document.getElementById('telemetryEmpty').style.display='block';
+    document.getElementById('telemetryEmpty').textContent='Consent withdrawn. The telemetry frame was purged — nothing is shown or kept. Grant consent again to restart the demo stream.';
+    ['pulsePole','pulseAnti'].forEach(function(id){var d=document.getElementById(id); d.classList.remove('pulsing'); d.style.background='';});
+    document.getElementById('dupWelfare').classList.remove('show');
+    ['bStep1','bStep2','bStep3','bStep4','bStep5','bStep6'].forEach(function(id,i){document.getElementById(id).textContent=i===0?'Waiting for consent…':'—';});
+    document.getElementById('frameJson').textContent='No frame — consent was withdrawn and the displayed frame purged.';
+    renderPower();
+  }
+});
+document.getElementById('dispBtn').addEventListener('click',function(){
+  if(!T.consent){ return; }
+  var id=''; var hex='0123456789abcdef'; for(var i=0;i<12;i++)id+=hex[Math.floor(Math.random()*16)];
+  var req={id:id,type:document.getElementById('dispType').value,pri:document.getElementById('dispPri').value,notes:document.getElementById('dispNotes').value.trim(),at:new Date().toLocaleTimeString()};
+  T.requests.unshift(req);
+  var list=document.getElementById('dispList'); list.innerHTML='';
+  T.requests.forEach(function(r){
+    var d=document.createElement('div'); d.className='reqitem';
+    d.innerHTML='<b>'+r.type+'</b> · '+r.pri+' · <span class="pill">PENDING</span><br><span style="color:var(--muted);font-size:13px">Request '+r.id+' · for SELF-4179 · created '+r.at+' · waiting for supervisor approval — nothing has been sent</span>'+(r.notes?'<br><span style="font-size:13px">\u201C'+r.notes.replace(/</g,'&lt;')+'\u201D</span>':'');
+    list.appendChild(d);
+  });
+  document.getElementById('dispNotes').value='';
+});
+renderRadio();
+if(typeof syncLiveUI==='function') syncLiveUI();
+
+// ---------- Planetary Encapsulation — real location → emulated MAC + 3D avatar ----------
+var ENCAP={lat:state.avLat,lon:state.avLon,acc:null,source:'starting position — not yet your live location',watchId:null,anim:true,lastMac:''};
+var reduceMotionEncap = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduceMotionEncap) ENCAP.anim=false;
+function emulatedMacFor(lat,lon){
+  var qlat=Math.round(lat*10000), qlon=Math.round(lon*10000);
+  var seed='CAPSULEMAC|'+qlat+'|'+qlon;
+  var h1=hashStr(seed), h2=hashStr(seed.split('').reverse().join(''));
+  var bytes=[0x02,(h1>>>16)&0xff,(h1>>>8)&0xff,h1&0xff,(h2>>>8)&0xff,h2&0xff];
+  return bytes.map(function(b){return b.toString(16).toUpperCase().padStart(2,'0')}).join(':');
+}
+function updateEncap(){
+  ENCAP.lat=state.avLat; ENCAP.lon=state.avLon;
+  var mac=emulatedMacFor(state.avLat,state.avLon); ENCAP.lastMac=mac;
+  document.getElementById('emacBox').textContent=mac;
+  document.getElementById('encapCoords').textContent=fmtLat(state.avLat)+', '+fmtLon(state.avLon);
+  document.getElementById('encapSource').textContent=ENCAP.source;
+  document.getElementById('encapAcc').textContent=ENCAP.acc==null?'—':(ENCAP.acc>=1000?(ENCAP.acc/1000).toFixed(1)+' km':Math.round(ENCAP.acc)+' m');
+  document.getElementById('encapTilt').textContent=Math.abs(state.avLat).toFixed(1)+'°';
+  var anti=antipodeOf(state.avLat,state.avLon);
+  document.getElementById('encapAnti').textContent=fmtLat(anti.lat)+', '+fmtLon(anti.lon);
+  document.getElementById('encapPulse').textContent=state.pulseOn?((state.mode==='union'?'UNION':'OPPOSITE')+' · '+state.bpm+' bpm'):'Idle';
+}
+function showGeoMsg(txt,ok){ var el=document.getElementById('geoMsg'); el.textContent=txt; el.className='msg show '+(ok?'ok':'warn'); el.style.display='block'; }
+function applyRealLocation(pos){
+  var lat=pos.coords.latitude, lon=pos.coords.longitude;
+  state.avLat=Math.max(-85,Math.min(85,lat)); state.avLon=normLon(lon);
+  state.rotLat=state.avLat; state.rotLon=state.avLon;
+  ENCAP.acc=pos.coords.accuracy||null;
+  ENCAP.source='live — from this device, '+new Date(pos.timestamp||Date.now()).toLocaleTimeString();
+  document.getElementById('encapStatusPill').textContent='● Live location locked';
+  updateIdentity(); updateEncap();
+  showGeoMsg('Real location locked: '+fmtLat(state.avLat)+', '+fmtLon(state.avLon)+(ENCAP.acc!=null?' (±'+Math.round(ENCAP.acc)+' m)':'')+'. The globe avatar, Dupode and emulated MAC have all moved to it.',true);
+}
+function geoError(err){
+  document.getElementById('encapStatusPill').textContent='Location unavailable';
+  var m = err && err.code===1 ? 'Permission denied — allow location for this site in your browser, then tap again. The capsule has stayed on its last position.' :
+          err && err.code===3 ? 'Location timed out — try again, ideally near a window or with GPS / Wi-Fi on.' :
+          'Location is unavailable on this device / browser right now. The capsule has stayed on its last position.';
+  showGeoMsg(m,false);
+}
+document.getElementById('geoBtn').addEventListener('click',function(){
+  if(!('geolocation' in navigator)){ showGeoMsg('Geolocation is not available in this browser. The capsule has stayed on its last position.',false); return; }
+  document.getElementById('encapStatusPill').textContent='Locating…';
+  showGeoMsg('Asking the browser for your location — accept the permission prompt if one appears…',true);
+  navigator.geolocation.getCurrentPosition(applyRealLocation,geoError,{enableHighAccuracy:true,timeout:15000,maximumAge:10000});
+});
+document.getElementById('geoWatchBtn').addEventListener('click',function(){
+  if(!('geolocation' in navigator)){ showGeoMsg('Geolocation is not available in this browser.',false); return; }
+  if(ENCAP.watchId!==null){ navigator.geolocation.clearWatch(ENCAP.watchId); ENCAP.watchId=null; this.textContent='Watch my location'; document.getElementById('encapStatusPill').textContent='Watch stopped'; return; }
+  this.textContent='Stop watching';
+  document.getElementById('encapStatusPill').textContent='Watching location…';
+  ENCAP.watchId=navigator.geolocation.watchPosition(applyRealLocation,geoError,{enableHighAccuracy:true,timeout:20000,maximumAge:5000});
+});
+document.getElementById('geoHomeBtn').addEventListener('click',function(){
+  state.avLat=0; state.avLon=0; state.rotLat=0; state.rotLon=0; ENCAP.acc=null; ENCAP.source='ring config HOME — R01L 4179 at 0°, 0°';
+  document.getElementById('encapStatusPill').textContent='Ring HOME position';
+  updateIdentity(); updateEncap(); showGeoMsg('Capsule moved to the ring config HOME position (0°, 0°, sector HOME) and its emulated MAC updated.',true);
+});
+document.getElementById('encapAnimBtn').addEventListener('click',function(){ ENCAP.anim=!ENCAP.anim; this.textContent=ENCAP.anim?'Pause avatar animation':'Resume avatar animation'; });
+if(reduceMotionEncap) document.getElementById('encapAnimBtn').textContent='Resume avatar animation';
+updateEncap();
+
+// 3D-style animated human avatar inside the capsule — canvas 2D, pseudo-3D turn + limb swing
+var encapC=document.getElementById('encapCanvas'), ectx=encapC.getContext('2d');
+function drawEncap(){
+  var W=encapC.width,H=encapC.height,cx=W/2;
+  var t=ENCAP.anim?Date.now()/1000:1.2;
+  var beat=state.pulseOn?(Date.now()/1000)*(state.bpm/60)*Math.PI*2:0;
+  var pulse=state.pulseOn?1+0.05*Math.sin(beat):1;
+  ectx.clearRect(0,0,W,H);
+  // stars
+  ectx.fillStyle='rgba(255,255,255,0.75)';
+  for(var i=0;i<46;i++){ var sx=(i*173)%W, sy=(i*97)%190; var r=(i%3)*0.6+0.7; ectx.beginPath(); ectx.arc(sx,sy,r,0,Math.PI*2); ectx.fill(); }
+  // dipole / radial axis — the alignment line, through planet centre and capsule
+  ectx.beginPath(); ectx.moveTo(cx,14); ectx.lineTo(cx,H-6); ectx.strokeStyle='rgba(125,211,252,0.8)'; ectx.lineWidth=2; ectx.setLineDash([8,7]); ectx.stroke(); ectx.setLineDash([]);
+  ectx.font='600 12px "IBM Plex Mono",monospace'; ectx.fillStyle='#bae6fd'; ectx.textAlign='left'; ectx.fillText('↑ local radial — capsule axis',cx+14,30);
+  // planet — large sphere below, capsule feet on its surface
+  var pcY=H+318, pcR=430;
+  var pg=ectx.createRadialGradient(cx-120,H-170,40,cx,pcY,pcR);
+  pg.addColorStop(0,'#4a90b8'); pg.addColorStop(0.55,'#24506e'); pg.addColorStop(1,'#122a40');
+  ectx.beginPath(); ectx.arc(cx,pcY,pcR,0,Math.PI*2); ectx.fillStyle=pg; ectx.fill();
+  ectx.beginPath(); ectx.arc(cx,pcY,pcR,0,Math.PI*2); ectx.strokeStyle='rgba(255,255,255,0.35)'; ectx.lineWidth=1.5; ectx.stroke();
+  ectx.font='600 12px "IBM Plex Mono",monospace'; ectx.fillStyle='rgba(255,255,255,0.75)'; ectx.textAlign='center'; ectx.fillText('PLANET SURFACE · '+fmtLat(state.avLat)+', '+fmtLon(state.avLon),cx,H-14);
+  // ground shadow
+  var bob=ENCAP.anim?Math.sin(t*2.1)*3:0;
+  var breathe=ENCAP.anim?1+Math.sin(t*1.6)*0.012:1;
+  ectx.beginPath(); ectx.ellipse(cx,442,86,13,0,0,Math.PI*2); ectx.fillStyle='rgba(0,0,0,0.35)'; ectx.fill();
+  // pulse ring when ring telemetry drives it
+  if(state.pulseOn){ ectx.beginPath(); ectx.ellipse(cx,442,86*pulse+Math.sin(beat)*6,13*pulse,0,0,Math.PI*2); ectx.strokeStyle=state.welfare?'rgba(239,68,68,0.8)':'rgba(242,201,76,0.8)'; ectx.lineWidth=2; ectx.stroke(); }
+  // ---- human avatar (pseudo-3D: slow turn squeezes width, face offset follows turn) ----
+  var turn=ENCAP.anim?Math.sin(t*0.55):0.25;         // -1..1 turn
+  var squeeze=1-Math.abs(turn)*0.16;                  // narrower when side-on
+  var faceOff=turn*5;
+  var ay=196+bob;                                     // shoulder height
+  ectx.save(); ectx.translate(cx,0); ectx.scale(squeeze,1);
+  var swing=ENCAP.anim?Math.sin(t*2.1):0.2;
+  // legs — stepping in place
+  ectx.lineCap='round';
+  ectx.strokeStyle='#26324a'; ectx.lineWidth=17;
+  ectx.beginPath(); ectx.moveTo(-13,ay+118); ectx.lineTo(-18+swing*11,434); ectx.stroke();
+  ectx.beginPath(); ectx.moveTo(13,ay+118); ectx.lineTo(18-swing*11,434); ectx.stroke();
+  // shoes
+  ectx.fillStyle='#111827'; ectx.beginPath(); ectx.ellipse(-18+swing*11,438,15,7,0,0,Math.PI*2); ectx.fill(); ectx.beginPath(); ectx.ellipse(18-swing*11,438,15,7,0,0,Math.PI*2); ectx.fill();
+  // arms — swing opposite to legs
+  ectx.strokeStyle='#0f766e'; ectx.lineWidth=15;
+  ectx.beginPath(); ectx.moveTo(-34,ay+10); ectx.lineTo(-52-swing*13,ay+74); ectx.stroke();
+  ectx.beginPath(); ectx.moveTo(34,ay+10); ectx.lineTo(52+swing*13,ay+74); ectx.stroke();
+  ectx.strokeStyle='#e8b08a'; ectx.lineWidth=11;
+  ectx.beginPath(); ectx.moveTo(-52-swing*13,ay+74); ectx.lineTo(-56-swing*15,ay+94); ectx.stroke();
+  ectx.beginPath(); ectx.moveTo(52+swing*13,ay+74); ectx.lineTo(56+swing*15,ay+94); ectx.stroke();
+  // torso
+  ectx.fillStyle='#0f766e';
+  ectx.beginPath();
+  var tw=40*breathe, th=124;
+  if(ectx.roundRect) ectx.roundRect(-tw,ay,-tw*-2,th,20); else ectx.rect(-tw,ay,tw*2,th);
+  ectx.fill();
+  ectx.fillStyle='#f2c94c'; ectx.fillRect(-tw,ay+52,tw*2,7); // capsulecraft gold seam / belt
+  // neck + head
+  ectx.fillStyle='#e8b08a'; ectx.fillRect(-8,ay-18,16,20);
+  ectx.beginPath(); ectx.arc(faceOff,ay-44,27,0,Math.PI*2); ectx.fillStyle='#f0bd93'; ectx.fill();
+  ectx.beginPath(); ectx.arc(faceOff,ay-58,27,Math.PI,Math.PI*2); ectx.fillStyle='#3b2a1e'; ectx.fill(); // hair cap
+  ectx.fillStyle='#17201c';
+  ectx.beginPath(); ectx.arc(faceOff-9,ay-42,2.6,0,Math.PI*2); ectx.fill();
+  ectx.beginPath(); ectx.arc(faceOff+9,ay-42,2.6,0,Math.PI*2); ectx.fill();
+  ectx.beginPath(); ectx.arc(faceOff,ay-32,7,0.15*Math.PI,0.85*Math.PI); ectx.strokeStyle='#17201c'; ectx.lineWidth=2; ectx.stroke();
+  ectx.restore();
+  // ---- capsule shell over the avatar ----
+  var capW=196*pulse, capH=386, capX=cx-capW/2, capY=64;
+  ectx.beginPath();
+  if(ectx.roundRect) ectx.roundRect(capX,capY,capW,capH,capW/2); else ectx.rect(capX,capY,capW,capH);
+  var cg=ectx.createLinearGradient(capX,capY,capX+capW,capY+capH);
+  cg.addColorStop(0,'rgba(186,230,253,0.20)'); cg.addColorStop(0.5,'rgba(186,230,253,0.05)'); cg.addColorStop(1,'rgba(20,184,166,0.14)');
+  ectx.fillStyle=cg; ectx.fill();
+  ectx.strokeStyle=state.welfare?'rgba(239,68,68,0.95)':'rgba(242,201,76,0.95)'; ectx.lineWidth=3.5; ectx.stroke();
+  // glass highlight + equator seam
+  ectx.beginPath(); ectx.ellipse(cx-capW*0.27,capY+96,13,58,-0.18,0,Math.PI*2); ectx.fillStyle='rgba(255,255,255,0.28)'; ectx.fill();
+  ectx.beginPath(); ectx.moveTo(capX+6,442); ectx.lineTo(capX+capW-6,442); ectx.strokeStyle='rgba(242,201,76,0.9)'; ectx.lineWidth=3; ectx.stroke();
+  ectx.font='700 12px "IBM Plex Mono",monospace'; ectx.fillStyle='#fde68a'; ectx.textAlign='center';
+  ectx.fillText(ENCAP.lastMac||emulatedMacFor(state.avLat,state.avLon),cx,capY-12);
+  // alignment readout — refreshed ~1×/sec, not every frame
+  if(!drawEncap._n || (Date.now()-drawEncap._n)>900){ drawEncap._n=Date.now(); document.getElementById('encapAlign').textContent='0.0° error'; document.getElementById('encapPulse').textContent=state.pulseOn?((state.mode==='union'?'UNION':'OPPOSITE')+' · '+state.bpm+' bpm'):'Idle'; }
+  requestAnimationFrame(drawEncap);
+}
+drawEncap();
+
+buildEmblem();
+loop();
+</script>
+</body>
+</html>

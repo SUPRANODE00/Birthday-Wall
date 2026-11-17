@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:,">
+<title>D3M13N Capsulecraft Portal</title>
+<style>
+:root{
+  --bg:#f3f1fb; --pn:#ffffff; --pn2:#ece7fa; --ink:#1a1033; --dim:#5c4a8c; --bd:#d3c6f0;
+  --cy:#00707e; --vi:#7d1ec2; --gn:#0a7a3c; --gold:#8a6100; --hot:#c21e38;
+  --cy-soft:rgba(0,112,126,.10); --shadow:0 10px 30px rgba(60,30,140,.10);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#070412; --pn:#100a26; --pn2:#170e33; --ink:#efe9ff; --dim:#a794d6; --bd:#342064;
+    --cy:#00e5f5; --vi:#c44dff; --gn:#2bff88; --gold:#ffd36b; --hot:#ff4d5e;
+    --cy-soft:rgba(0,229,245,.08); --shadow:0 10px 30px rgba(0,0,0,.45);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 "Avenir Next","Trebuchet MS",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+a{color:var(--cy)}
+button,[role="button"],select,summary{min-height:2.25rem}
+input:not([type="checkbox"]){min-height:2.25rem}
+h1{font-size:clamp(30px,5.4vw,50px);line-height:1.08;margin:.15em 0 .35em;letter-spacing:-.01em;font-weight:800}
+h1 .accent{color:var(--cy)}
+h2{font-size:clamp(22px,3.4vw,30px);line-height:1.15;margin:.1em 0 .35em;font-weight:800}
+h3{font-size:17px;margin:.2em 0 .4em}
+p{color:var(--dim);max-width:64ch;margin:.4em 0}
+.k{font:11px ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--cy);font-weight:700}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+section{padding:38px 0 10px}
+nav{position:sticky;top:0;z-index:60;background:var(--bg);border-bottom:1px solid var(--bd)}
+.nav-in{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between}
+.brand b{letter-spacing:.06em;font-size:16px}
+.brand small{display:block;color:var(--dim);font:10.5px ui-monospace,Menlo,monospace;letter-spacing:.08em}
+.nav-links{display:flex;flex-wrap:wrap;gap:2px 4px}
+.nav-links a{color:var(--dim);text-decoration:none;font-size:13.5px;padding:8px 9px;border-radius:8px;min-height:36px;display:inline-flex;align-items:center}
+.nav-links a:hover{color:var(--cy);background:var(--cy-soft)}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.grid2{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:860px){.grid2{grid-template-columns:1.15fr .85fr}}
+.pn{background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:18px;box-shadow:var(--shadow)}
+.pn.flat{box-shadow:none;background:var(--pn2)}
+.row{display:flex;justify-content:space-between;gap:10px;font:12.5px ui-monospace,Menlo,monospace;padding:7px 0;border-bottom:1px solid var(--bd)}
+.row:last-child{border-bottom:none}
+.row i{font-style:normal;color:var(--cy);text-align:right;word-break:break-all}
+.stats{display:flex;gap:26px;flex-wrap:wrap;margin-top:16px}
+.stats div b{display:block;font-size:26px;font-family:ui-monospace,Menlo,monospace}
+.stats div span{font-size:11.5px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.btn{font:inherit;font-size:14px;color:var(--ink);background:var(--pn);border:1px solid var(--cy);border-radius:999px;padding:9px 18px;cursor:pointer;min-height:40px;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.btn:hover{border-color:var(--vi)}
+.btn.p{background:var(--cy);border-color:var(--cy);color:#fff;font-weight:700}
+@media (prefers-color-scheme:dark){.btn.p{color:#03222a}}
+.btn.sm{padding:6px 13px;min-height:38px;font-size:13px}
+.btn.danger{border-color:var(--hot);color:var(--hot)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.on{background:var(--cy);color:#fff;font-weight:700}
+@media (prefers-color-scheme:dark){.btn.on{color:#03222a}}
+:focus-visible{outline:2px solid var(--gn);outline-offset:2px}
+#bars{display:flex;align-items:flex-end;gap:4px;height:74px;margin-top:14px}
+#bars u{flex:1;background:var(--cy);opacity:.75;border-radius:2px 2px 0 0;transition:height .5s}
+@media (prefers-reduced-motion:reduce){#bars u{transition:none}}
+.chip{display:inline-block;font:11px ui-monospace,Menlo,monospace;padding:3px 9px;border:1px solid var(--bd);border-radius:999px;color:var(--dim)}
+.chip.live{color:var(--gn);border-color:var(--gn)}
+.chip.warn{color:var(--hot);border-color:var(--hot)}
+.chip.gold{color:var(--gold);border-color:var(--gold)}
+/* Capsule POV stage */
+#stage{position:relative;height:min(70vh,540px);min-height:400px;border:1px solid var(--bd);border-radius:14px;overflow:hidden;background:#05030c;color:#efe6ff}
+#c3{width:100%;height:100%;display:block;touch-action:none}
+.ov{position:absolute;background:rgba(5,3,12,.68);border:1px solid rgba(0,240,255,.35);border-radius:8px;padding:6px 10px;font:11px ui-monospace,monospace;color:#00f0ff;pointer-events:none;white-space:pre;max-width:46%}
+#stops{position:absolute;left:8px;right:8px;bottom:8px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+#stops button{font:inherit;font-size:12px;color:#efe6ff;background:rgba(5,3,12,.75);border:1px solid #00f0ff;border-radius:999px;padding:8px 13px;cursor:pointer;min-height:38px}
+#stops button.on{background:#00f0ff;color:#04141c;font-weight:700}
+.pad{position:absolute;bottom:88px;display:grid;gap:6px}
+#pl{left:10px;grid-template-columns:repeat(3,44px)}
+#pr{right:10px;grid-template-columns:44px}
+.pad button{width:44px;height:44px;padding:0;border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none;color:#efe6ff;background:rgba(5,3,12,.72);border:1px solid rgba(0,240,255,.5);font:13px ui-monospace,monospace;cursor:pointer}
+.pad button:active{background:#00f0ff;color:#04141c}
+/* Globe */
+#globe{width:100%;max-width:520px;aspect-ratio:1;display:block;margin:0 auto;border-radius:50%;cursor:grab;touch-action:none}
+#globe:active{cursor:grabbing}
+#map2d{width:100%;height:auto;display:block;border:1px solid var(--bd);border-radius:10px;background:#05030c}
+canvas:focus-visible{outline:2px solid var(--gn);outline-offset:2px}
+label{display:block;font:11px ui-monospace,Menlo,monospace;letter-spacing:.08em;color:var(--dim);margin:13px 0 5px;text-transform:uppercase}
+input,select,textarea{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--bd);border-radius:8px;padding:10px;font:inherit}
+input[type="range"]{padding:0;accent-color:var(--cy)}
+input[type="checkbox"]{width:20px;height:20px;accent-color:var(--cy)}
+.checkline{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink);text-transform:none;letter-spacing:0;font-family:inherit}
+.fx{display:grid;gap:0 16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+table{width:100%;border-collapse:collapse;font:12.5px ui-monospace,Menlo,monospace}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--bd);vertical-align:top}
+th{color:var(--cy);font-weight:700}
+.tablewrap{overflow-x:auto}
+@media(max-width:640px){
+  .tablewrap table,.tablewrap thead,.tablewrap tbody,.tablewrap tr,.tablewrap td{display:block;width:100%}
+  .tablewrap thead{display:none}
+  .tablewrap tr{border-bottom:2px solid var(--bd);padding:6px 0}
+  .tablewrap td{border-bottom:none;padding:3px 8px}
+}
+pre.json{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:12px;font:11.5px/1.55 ui-monospace,Menlo,monospace;overflow-x:auto;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow-y:auto}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:12px ui-monospace,Menlo,monospace;margin:10px 0}
+.chain b{background:var(--cy-soft);border:1px solid var(--bd);border-radius:6px;padding:6px 9px;font-weight:600}
+.chain span{color:var(--dim)}
+.flag{display:inline-block;font:11px ui-monospace,monospace;border:1px solid var(--hot);color:var(--hot);border-radius:6px;padding:2px 7px;margin:2px 3px 2px 0}
+.flag.ok{border-color:var(--gn);color:var(--gn)}
+#encCanvas{width:100%;max-width:460px;aspect-ratio:4/4.6;display:block;margin:0 auto}
+#emblemOut{display:flex;align-items:center;justify-content:center;min-height:190px;background:var(--bg);border:1px dashed var(--bd);border-radius:8px;padding:12px}
+#emblemOut svg{max-width:200px;max-height:200px}
+#heightOut{width:100%;max-width:260px;image-rendering:pixelated;border-radius:6px;display:none}
+.statusline{font:12.5px ui-monospace,Menlo,monospace;color:var(--dim);margin-top:8px;min-height:1.4em}
+.bigclock{font:30px ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.02em}
+footer{border-top:1px solid var(--bd);margin-top:44px;padding:24px 16px 34px;text-align:center;color:var(--dim);font:11.5px ui-monospace,Menlo,monospace}
+.modebar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.axisbox{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:10px}
+</style>
+</head>
+<body>
+<nav><div class="nav-in">
+  <div class="brand"><b>D3M13N 𖤐 CAPSULECRAFT</b><small>US-TX-HOUSTON // JURISDICTIONAL NODE · PORTAL v3</small></div>
+  <div class="nav-links">
+    <a href="#hero">Dashboard</a><a href="#vr">Capsule POV</a><a href="#world">Global map</a><a href="#dupode">Dupode</a><a href="#capsule">Encapsulation</a><a href="#telemetry">Telemetry</a><a href="#tools">Tools</a><a href="#register">Register</a><a href="#database">Registry</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ============ HERO / DASHBOARD ============ -->
+<section id="hero">
+  <div class="grid2" style="display:grid;gap:18px">
+    <div>
+      <span class="k">Telecom-Sourceback-Portal // enterprise telemetry</span>
+      <h1>One portal for the capsule, the <span class="accent">planet</span>, and the ring.</h1>
+      <p>The three earlier drafts, unified: walk the Omni-lens capsule in first person, spin the avatar globe from the Houston origin-node, run the Dupode as one two-node unit powered by ring <strong>R01L 4179</strong>, and keep the node registry — all in this browser, no account server.</p>
+      <p>
+        <a class="btn p" href="#vr">Enter capsule</a>
+        <a class="btn" href="#world">Open global map</a>
+        <a class="btn" href="#register">Register node</a>
+      </p>
+      <div class="stats">
+        <div><b id="sN">1,048</b><span>Active nodes</span></div>
+        <div><b>99.98%</b><span>Uptime</span></div>
+        <div><b>14 ms</b><span>Grid latency</span></div>
+        <div><b id="utcClock" class="mono">--:--:--</b><span>UTC · live</span></div>
+      </div>
+    </div>
+    <div class="pn">
+      <div class="k">Node monitor v3.0</div>
+      <div class="row"><span>JURISDICTION</span><i>US-TX-HOUSTON</i></div>
+      <div class="row"><span>OPERATOR</span><i>D3M13N 𖤐 CAPSULECRAFT</i></div>
+      <div class="row"><span>ROOT</span><i>origin-node · HR-0001</i></div>
+      <div class="row"><span>RING</span><i>R01L 4179 · SELF-4179 · HOME</i></div>
+      <div class="row"><span>REGISTRY</span><i>THIS BROWSER · SESSION ONLY</i></div>
+      <div class="row"><span>SUN AT AVATAR</span><i id="sunHero">—</i></div>
+      <div id="bars" aria-hidden="true"></div>
+      <div class="statusline" id="heroStatus">Throughput sweep running · drag the globe below to move the avatar — pole, anti-pole, capsule and MAC all follow.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAPSULE POV ============ -->
+<section id="vr">
+  <span class="k">Omni-lens capsule · POV</span>
+  <h2>Capsule A → grid capsule B → Hermes head → robot link</h2>
+  <p>Drag to look around. Click the view, then fly with <span class="mono">W A S D</span>, rise with Space / E, sink with Q / C, sprint with Shift. On a phone, use the round pads. The four stops are the tour from the original capsule file.</p>
+  <div id="stage" tabindex="0" aria-label="3D capsule walk-through view. Drag to look, W A S D keys or on-screen pads to move.">
+    <canvas id="c3"></canvas>
+    <div class="ov" id="vt" style="left:8px;top:8px"></div>
+    <div class="ov" id="vx" style="right:8px;top:8px"></div>
+    <div class="pad" id="pl">
+      <button data-k="w" style="grid-area:1/2" aria-label="Move forward">W</button>
+      <button data-k="a" style="grid-area:2/1" aria-label="Move left">A</button>
+      <button data-k="s" style="grid-area:2/2" aria-label="Move back">S</button>
+      <button data-k="d" style="grid-area:2/3" aria-label="Move right">D</button>
+    </div>
+    <div class="pad" id="pr">
+      <button data-k="u" aria-label="Rise">▲</button>
+      <button data-k="dn" aria-label="Sink">▼</button>
+    </div>
+    <div id="stops">
+      <button data-s="0" class="on">Capsule A · Outer shell</button>
+      <button data-s="1">Capsule B</button>
+      <button data-s="2">Avatar head</button>
+      <button data-s="3">Robot link</button>
+    </div>
+  </div>
+  <div class="statusline" id="vrStatus">Stop 1 of 4 — Capsule A, outer shell. The wireframe sphere is the Omni-lens; capsule B, the Hermes avatar head and the robot sit deeper along the axis.</div>
+</section>
+
+<!-- ============ GLOBAL MAP ============ -->
+<section id="world">
+  <span class="k">Capsulecraft global map</span>
+  <h2>Origin-node root, avatar globe &amp; zone links</h2>
+  <p>Drag the globe to spin it, click it to move your avatar. Day / night shading uses the real sun position for the current UTC time. The gold marker is your avatar, the blue marker its dipole anti-pole, joined by the axis through the centre. Below, the flat map links the Houston origin-node to every zone.</p>
+  <div class="grid2" style="display:grid;gap:18px">
+    <div class="pn">
+      <canvas id="globe" width="640" height="640" tabindex="0" aria-label="Interactive globe. Drag to rotate, click to place the avatar."></canvas>
+      <div class="btnrow" style="justify-content:center">
+        <button class="btn sm" id="spinBtn" type="button">Pause spin</button>
+        <button class="btn sm" id="goAntiBtn" type="button">Go to anti-pole</button>
+        <button class="btn sm" id="flipBtn" type="button">Flip to other end</button>
+        <button class="btn sm" id="axisBtn" type="button">Hide dipole axis</button>
+      </div>
+      <div class="statusline" id="globeStatus" style="text-align:center"></div>
+    </div>
+    <div>
+      <div class="pn">
+        <div class="k">Avatar</div>
+        <div class="row"><span>POSITION</span><i id="avPos">0.00°, 0.00°</i></div>
+        <div class="row"><span>SUN AT AVATAR</span><i id="avSun">—</i></div>
+        <div class="row"><span>LOOKING AT</span><i id="avLook">—</i></div>
+        <div class="row"><span>AVATARS ONLINE</span><i>1</i></div>
+        <div class="row"><span>ANTI-POLE</span><i id="avAnti">0.00°, 180.00°</i></div>
+        <label for="latIn">Latitude (−90…90)</label>
+        <input id="latIn" type="number" min="-90" max="90" step="0.1" value="0">
+        <label for="lonIn">Longitude (−180…180)</label>
+        <input id="lonIn" type="number" min="-180" max="180" step="0.1" value="0">
+        <div class="btnrow"><button class="btn sm" id="setPosBtn" type="button">Set avatar position</button>
+        <button class="btn sm" id="houstonBtn" type="button">Go to Houston origin</button></div>
+      </div>
+      <div class="pn" style="margin-top:18px">
+        <div class="k">Avatar identity</div>
+        <label for="bizName">Business name / mark</label>
+        <input id="bizName" type="text" value="D3M13N 𖤐 CAPSULECRAFT">
+        <label for="angleIn">Receptive angle · <span id="angleVal">120°</span></label>
+        <input id="angleIn" type="range" min="10" max="360" step="1" value="120">
+        <label for="reachIn">Receptive reach · <span id="reachVal">2500 km</span></label>
+        <input id="reachIn" type="range" min="100" max="10000" step="50" value="2500">
+        <div class="row"><span>HEX ADDRESS</span><i id="hexAddr">—</i></div>
+        <div class="row"><span>NONARY ADDRESS</span><i id="nonAddr">—</i></div>
+        <div class="row"><span>REACH RING</span><i id="reachInfo">—</i></div>
+      </div>
+    </div>
+  </div>
+  <div class="pn" style="margin-top:18px">
+    <div class="k">Zone links · flat map</div>
+    <canvas id="map2d" width="720" height="360" role="img" aria-label="World map with the origin-node at Houston and links to the other zones"></canvas>
+    <div class="statusline" id="hrLine"></div>
+  </div>
+</section>
+
+<!-- ============ DUPODE ============ -->
+<section id="dupode">
+  <span class="k">Dipole · Dupode</span>
+  <h2>The pair as one two-node unit</h2>
+  <p>Pole and anti-pole, powered by ring R01L 4179. <strong>Union</strong> pulses both ends together; <strong>Opposite</strong> pulses them half a beat apart, mirrored across the axis. The pulse rate is the ring heart rate — demo stream, or live when you connect the ring in Telemetry.</p>
+  <div class="modebar">
+    <button class="btn sm on" id="modeUnion" type="button">Union · in sync</button>
+    <button class="btn sm" id="modeOpp" type="button">Opposite · mirrored</button>
+    <span class="chip" id="pulseChip">Pulse source: demo · 62 bpm</span>
+    <span class="chip warn" id="welfareChip" style="display:none">WELFARE CHECK</span>
+  </div>
+  <div class="grid">
+    <div class="pn">
+      <h3 style="color:var(--gold)">● Pole — avatar</h3>
+      <div class="row"><span>COORDS</span><i id="poleCoords">—</i></div>
+      <div class="row"><span>SUN</span><i id="poleSun">—</i></div>
+      <div class="row"><span>HEX</span><i id="poleHex">—</i></div>
+      <div class="row"><span>NONARY</span><i id="poleNon">—</i></div>
+      <div class="row"><span>PULSE PHASE</span><i id="polePhase">0.00</i></div>
+    </div>
+    <div class="pn">
+      <h3 style="color:var(--cy)">● Anti-pole</h3>
+      <div class="row"><span>COORDS</span><i id="antiCoords">—</i></div>
+      <div class="row"><span>SUN</span><i id="antiSun">—</i></div>
+      <div class="row"><span>HEX</span><i id="antiHex">—</i></div>
+      <div class="row"><span>NONARY</span><i id="antiNon">—</i></div>
+      <div class="row"><span>PULSE PHASE</span><i id="antiPhase">0.00</i></div>
+    </div>
+    <div class="pn">
+      <h3>Pair geometry</h3>
+      <div class="axisbox"><canvas id="axisCanvas" width="300" height="120" style="width:100%;height:auto;display:block" role="img" aria-label="Diagram of the dipole axis tilting with avatar latitude"></canvas></div>
+      <div class="row"><span>SEPARATION</span><i>180.00° · always antipodal</i></div>
+      <div class="row"><span>THROUGH EARTH</span><i>12,742 km</i></div>
+      <div class="row"><span>OVER SURFACE</span><i>20,015 km</i></div>
+      <div class="row"><span>SOLAR OFFSET</span><i>≈ 12 h</i></div>
+      <div class="row"><span>AXIS TILT (= LAT)</span><i id="axisTilt">0.0°</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ENCAPSULATION ============ -->
+<section id="capsule">
+  <span class="k">Planetary encapsulation</span>
+  <h2>3D-style avatar, capsule shell &amp; emulated MAC</h2>
+  <p>An animated human-like avatar stands inside its capsule, feet on the planet, the capsule's long axis locked to the local vertical — radial alignment through the centre, the same line as the dipole axis. Use your real location and the capsule, globe avatar, anti-pole and MAC all move together. Browsers cannot read a hardware MAC, so the MAC here is <em>emulated</em>: generated locally from your position, snapped to a ~11&nbsp;m grid, and labelled as such.</p>
+  <div class="grid2" style="display:grid;gap:18px">
+    <div class="pn">
+      <canvas id="encCanvas" width="460" height="529" role="img" aria-label="Animated avatar standing in a transparent capsule on a planet surface"></canvas>
+      <div class="statusline" id="encStatus" style="text-align:center">Idle animation: breathing, sway, stepping, slow turn · pulse ring synced to ring heart rate.</div>
+    </div>
+    <div>
+      <div class="pn">
+        <div class="k">Alignment &amp; identity</div>
+        <div class="row"><span>LOCATION</span><i id="encLoc">0.00°, 0.00° · ring HOME</i></div>
+        <div class="row"><span>SOURCE</span><i id="encSrc">Ring config · 0°, 0°</i></div>
+        <div class="row"><span>ACCURACY</span><i id="encAcc">—</i></div>
+        <div class="row"><span>EMULATED MAC</span><i id="encMac">02:00:00:00:00:00</i></div>
+        <div class="row"><span>CAPSULE TILT (= LAT)</span><i id="encTilt">0.0°</i></div>
+        <div class="row"><span>ALIGNMENT ERROR</span><i>0.0° · locked to radial</i></div>
+        <div class="row"><span>ANTI-POLE CAPSULE</span><i id="encAnti">0.00°, 180.00°</i></div>
+        <div class="row"><span>RING PULSE SYNC</span><i id="encSync">62 bpm · demo</i></div>
+        <div class="btnrow">
+          <button class="btn sm p" id="geoBtn" type="button">Use my real location</button>
+          <button class="btn sm" id="geoWatchBtn" type="button">Watch location</button>
+          <button class="btn sm" id="geoStopBtn" type="button" disabled>Stop watch</button>
+        </div>
+        <div class="statusline" id="geoStatus">Location is only requested when you tap a button, and is never sent anywhere — it stays in this page.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELEMETRY + RING BRIDGE ============ -->
+<section id="telemetry">
+  <span class="k">Ring telemetry · SELF-4179</span>
+  <h2>Consent-first telemetry &amp; the Ring Bridge</h2>
+  <p>Ring <strong>R01L 4179</strong> · address <span class="mono">07:32:00:0A:41:79</span> · sector HOME · resting 62 bpm · baseline RMSSD 45 ms. No frame exists until you grant consent (heart_rate, device); withdrawing consent purges the frame. Dispatch is pending-only — nothing is ever sent from this page.</p>
+  <div class="grid2" style="display:grid;gap:18px">
+    <div class="pn">
+      <div class="k">Consent &amp; live link</div>
+      <div class="btnrow" style="margin-top:4px">
+        <button class="btn sm p" id="consentBtn" type="button">Grant consent</button>
+        <button class="btn sm danger" id="withdrawBtn" type="button" disabled>Withdraw &amp; purge</button>
+        <span class="chip" id="consentChip">NO CONSENT · NO FRAME</span>
+      </div>
+      <div class="btnrow">
+        <button class="btn sm" id="bleBtn" type="button">Connect live ring (Web Bluetooth)</button>
+        <button class="btn sm" id="bleAllBtn" type="button">Show all devices</button>
+        <button class="btn sm" id="bleDiscBtn" type="button" disabled>Disconnect</button>
+        <span class="chip" id="bleChip">DEMO STREAM</span>
+      </div>
+      <div class="statusline" id="bleStatus">Demo stream is the fallback. For a live link: close the ring's vendor app first (one BLE connection at a time), grant consent, then Connect and pick R01L 4179. Needs Chrome / Edge — Safari, Firefox and in-app webviews have no Web Bluetooth.</div>
+      <div class="btnrow">
+        <button class="btn sm" id="spikeBtn" type="button" disabled>Demo: stress spike</button>
+        <button class="btn sm" id="calmBtn" type="button" disabled>Demo: settle</button>
+      </div>
+      <div id="frameBox" style="margin-top:12px">
+        <div class="statusline" id="noFrame">No telemetry frame — grant consent to start the stream.</div>
+        <div id="frameData" style="display:none">
+          <div class="row"><span>HEART RATE</span><i id="tHr">—</i></div>
+          <div class="row"><span>HRV · RMSSD</span><i id="tHrv">—</i></div>
+          <div class="row"><span>STRESSPROXY</span><i id="tStress">—</i></div>
+          <div class="row"><span>CORE / SKIN TEMP</span><i id="tTemp">—</i></div>
+          <div class="row"><span>SpO₂</span><i id="tSpo2">—</i></div>
+          <div class="row"><span>STEPS</span><i id="tSteps">—</i></div>
+          <div class="row"><span>BATTERY · 0x2A19</span><i id="tBatt">—</i></div>
+          <div class="row"><span>STATUS</span><i id="tStatus">—</i></div>
+          <div class="row"><span>ANOMALIES</span><i id="tFlags">none</i></div>
+          <div class="row"><span>DISPATCH</span><i>PENDING · awaiting supervisor approval</i></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="pn">
+        <div class="k">Radio · data.csv samples</div>
+        <p style="margin-top:2px">Your two real samples — NR SA, band 41, 2506.95 MHz, TAC 8222976, MCC 310 / MNC 260. RSRP −99 dBm stays above the −110 weak-link threshold, so neither raises WEAK_LINK.</p>
+        <div class="row"><span>TIMESTAMP</span><i id="rTs">2026-11-15 04:24:00</i></div>
+        <div class="row"><span>RSRP / RSRQ / SINR</span><i id="rSig">−99 dBm / −15 dB / 1 dB</i></div>
+        <div class="row"><span>PCI</span><i id="rPci">531</i></div>
+        <div class="row"><span>NCI</span><i id="rNci">6448927021</i></div>
+        <div class="btnrow">
+          <button class="btn sm" id="radioPrev" type="button">‹ Prev sample</button>
+          <button class="btn sm" id="radioPlay" type="button">Play</button>
+          <button class="btn sm" id="radioNext" type="button">Next sample ›</button>
+        </div>
+        <div class="statusline" id="radioStatus">Sample 1 of 2 · serving cell PCI 531.</div>
+      </div>
+      <div class="pn" style="margin-top:18px">
+        <div class="k">Ring Bridge chain</div>
+        <div class="chain"><b>Ring BLE</b><span>→</span><b>0x2A37 HR bytes</b><span>→</span><b>bpm + RR</b><span>→</span><b>RMSSD · 60-window</b><span>→</span><b>StressProxy 0–1</b><span>→</span><b>0x2A19 battery</b><span>→</span><b>RadioCsv row</b><span>→</span><b>TelemetryFrame</b></div>
+        <div class="row"><span>LAST 0x2A37 BYTES</span><i id="bridgeHex">—</i></div>
+        <div class="row"><span>RMSSD WINDOW</span><i id="bridgeWin">0 / 60 intervals · needs ≥ 8</i></div>
+        <div class="row"><span>STRESSPROXY MIX</span><i>0.6 heart-rate + 0.4 HRV · proxy, not clinical</i></div>
+        <div class="row"><span>COMMANDS</span><i>scan · inspect · stream [--grant-self]</i></div>
+        <p style="font-size:13.5px">Notes from the bridge: MAC address on Windows / Linux, UUID on macOS; custom characteristics live in <span class="mono">custom_map</span> (currently empty — so live temp / SpO₂ / steps show as unavailable, never faked); frames older than 15 s are not sent; a REJECTED reply means grant consent first.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pn" style="margin-top:18px">
+    <div class="k">Fused TelemetryFrame · JSON</div>
+    <pre class="json" id="frameJson">null — no frame until consent is granted.</pre>
+  </div>
+</section>
+
+<!-- ============ TOOLS: SENSORS / GATEWAY / EMBLEM ============ -->
+<section id="tools">
+  <span class="k">Device tools</span>
+  <h2>Compass, Bluetooth, NFC, Gateway &amp; emblem compiler</h2>
+  <div class="grid">
+    <div class="pn">
+      <h3>Sensors</h3>
+      <div class="row"><span>COMPASS</span><i id="compassVal">off — tap Start compass</i></div>
+      <div class="row"><span>BLUETOOTH</span><i id="btVal">not connected</i></div>
+      <div class="row"><span>NFC</span><i id="nfcVal">off</i></div>
+      <div class="btnrow">
+        <button class="btn sm" id="compassBtn" type="button">Start compass</button>
+        <button class="btn sm" id="nfcBtn" type="button">Start NFC scan</button>
+      </div>
+      <div class="statusline" id="sensorStatus">Each sensor uses its real browser API where one exists; where the browser has none, the panel says so instead of simulating a reading.</div>
+    </div>
+    <div class="pn">
+      <h3>Gateway · local demo</h3>
+      <p style="font-size:13.5px;margin-top:2px">Local demo only — no email or SMS is sent and there is no account server. It confirms you can read a code shown in this browser, not your real address.</p>
+      <label for="gwName">Display / business name</label>
+      <input id="gwName" type="text" placeholder="e.g. D3M13N 𖤐 CAPSULECRAFT">
+      <label for="gwContact">Email or phone (shown on screen only)</label>
+      <input id="gwContact" type="text" placeholder="operator@example.com">
+      <div class="btnrow"><button class="btn sm p" id="gwSend" type="button">Show demo code</button></div>
+      <div class="statusline" id="gwCodeLine"></div>
+      <label for="gwCode">Enter the code</label>
+      <input id="gwCode" type="text" inputmode="numeric" placeholder="6-digit code">
+      <div class="btnrow"><button class="btn sm" id="gwVerify" type="button">Verify code</button></div>
+      <div class="statusline" id="gwStatus"></div>
+    </div>
+    <div class="pn">
+      <h3>Avatar emblem compiler</h3>
+      <p style="font-size:13.5px;margin-top:2px">Not generative AI. Text maps known keywords to simple shapes; an image becomes a brightness heightmap. Both run in this browser only.</p>
+      <label for="emblemText">Describe the emblem</label>
+      <input id="emblemText" type="text" value="crystal wing spike ring gold">
+      <div class="btnrow">
+        <button class="btn sm p" id="emblemBtn" type="button">Compile emblem</button>
+        <button class="btn sm" id="emblemDl" type="button" disabled>Download SVG</button>
+      </div>
+      <div id="emblemOut" style="margin-top:12px"><span class="mono" style="color:var(--dim);font-size:12px">Keywords: crystal · wing · spike · ring · star · wave · gold · cyan · violet</span></div>
+      <label for="emblemImg">Or upload an image → heightmap</label>
+      <input id="emblemImg" type="file" accept="image/*">
+      <div style="margin-top:10px;text-align:center"><img id="heightOut" alt="Brightness heightmap generated from your uploaded image"></div>
+      <div class="statusline" id="emblemStatus"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REGISTER ============ -->
+<section id="register">
+  <div class="pn" style="max-width:780px;margin:0 auto">
+    <span class="k">Secure portal registration</span>
+    <h2>Register node &amp; telemetry profile</h2>
+    <form id="regForm">
+      <div class="fx">
+        <div><label for="n">Operator alias / name</label><input id="n" required placeholder="e.g. D3M13N 𖤐 CAPSULECRAFT"></div>
+        <div><label for="e">Secure email identifier</label><input id="e" type="email" required placeholder="operator@telecom-sourceback.net"></div>
+        <div><label for="z">Jurisdictional zone</label>
+          <select id="z"><option>US-TX-HOUSTON</option><option>US-CA-VALLEY</option><option>EU-DE-BERLIN</option><option>AP-JP-TOKYO</option></select></div>
+        <div><label for="m">Initial metric (dBm / MHz)</label><input id="m" required placeholder="-68.4 dBm / 5.2GHz"></div>
+      </div>
+      <label for="o">Node notes</label>
+      <textarea id="o" rows="3" placeholder="Diagnostics or notes…"></textarea>
+      <label class="checkline"><input id="a" type="checkbox" required> <span>Authorize telemetry broadcast to the registry</span></label>
+      <p><button class="btn p" type="submit">Register node</button> <span id="ok" role="status" class="mono" style="font-size:12.5px;color:var(--gn)"></span></p>
+      <p style="font-size:13px">Registrations live in this tab's memory only and are gone when the page closes — there is no registry server behind this portal.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ REGISTRY ============ -->
+<section id="database">
+  <span class="k">Live registry</span>
+  <h2>Registered nodes</h2>
+  <div class="pn tablewrap">
+    <table>
+      <thead><tr><th>Alias</th><th>Email / ID</th><th>Zone</th><th>Metric</th><th>Notes</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+<footer>D3M13N 𖤐 CAPSULECRAFT · Houston, TX · Portal v3 — capsule POV, globe, Dupode, encapsulation, ring telemetry &amp; registry, all running locally in your browser.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+var RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function $(id){return document.getElementById(id);}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function pad2(n){return String(n).padStart(2,"0");}
+function fmtLat(lat){return Math.abs(lat).toFixed(2)+"° "+(lat>=0?"N":"S");}
+function fmtLon(lon){return Math.abs(lon).toFixed(2)+"° "+(lon>=0?"E":"W");}
+function normLon(lon){while(lon>180)lon-=360;while(lon<-180)lon+=360;return lon;}
+
+/* ---------- shared state ---------- */
+var state = {
+  lat: 0, lon: 0,            // avatar / pole
+  viewLat: 18, viewLon: -30, // globe centre
+  spinning: !RM, showAxis: true,
+  angle: 120, reach: 2500,
+  mode: "union",             // union | opposite
+  bpm: 62, rmssd: 45, live: false,
+  consent: false, stress: 0.18, spike: false,
+  battery: 87
+};
+function antiOf(lat,lon){return {lat:-lat, lon:normLon(lon+180)};}
+function hexAddr(lat,lon,angle,reach){
+  var a=Math.round(((lat+90)/180)*65535), b=Math.round(((normLon(lon)+180)/360)*65535);
+  var c=Math.round((angle/360)*255), d=Math.round((reach/10000)*255);
+  return "0x"+a.toString(16).toUpperCase().padStart(4,"0")+"-"+b.toString(16).toUpperCase().padStart(4,"0")+"-"+pad2(c.toString(16).toUpperCase())+pad2(d.toString(16).toUpperCase());
+}
+function nonAddr(lat,lon,angle,reach){
+  function b9(n,len){var s="";n=Math.abs(Math.round(n));for(var i=0;i<len;i++){s=(n%9)+s;n=Math.floor(n/9);}return s;}
+  return b9(((lat+90)/180)*6561,4)+"-"+b9(((normLon(lon)+180)/360)*6561,4)+"-"+b9((angle/360)*81,2)+b9((reach/10000)*81,2);
+}
+/* sun position (approx, from UTC) */
+function sunPos(date){
+  var start=Date.UTC(date.getUTCFullYear(),0,0);
+  var doy=Math.floor((date.getTime()-start)/86400000);
+  var decl=-23.44*Math.cos((2*Math.PI/365)*(doy+10));
+  var utcH=date.getUTCHours()+date.getUTCMinutes()/60+date.getUTCSeconds()/3600;
+  var lon=normLon(180-utcH*15);
+  return {lat:decl, lon:lon};
+}
+function sunAt(lat,lon,date){
+  var s=sunPos(date), dLat=(lat-s.lat)*Math.PI/180;
+  var dLon=(lon-s.lon)*Math.PI/180, la=lat*Math.PI/180, sl=s.lat*Math.PI/180;
+  var cosA=Math.sin(la)*Math.sin(sl)+Math.cos(la)*Math.cos(sl)*Math.cos(dLon);
+  var alt=Math.asin(clamp(cosA,-1,1))*180/Math.PI;
+  return {alt:alt, label: alt>0 ? "Day · sun "+alt.toFixed(1)+"° up" : "Night · sun "+Math.abs(alt).toFixed(1)+"° below horizon"};
+}
+
+/* ---------- UTC clock ---------- */
+function tickClock(){
+  var d=new Date();
+  $("utcClock").textContent=pad2(d.getUTCHours())+":"+pad2(d.getUTCMinutes())+":"+pad2(d.getUTCSeconds());
+}
+tickClock(); setInterval(tickClock,1000);
+
+/* ---------- dashboard bars ---------- */
+var bars=$("bars");
+for(var i=0;i<24;i++) bars.appendChild(document.createElement("u"));
+function sweepBars(){ for(var j=0;j<bars.children.length;j++) bars.children[j].style.height=(15+Math.random()*85)+"%"; }
+sweepBars(); if(!RM) setInterval(sweepBars,700);
+
+/* ---------- health ring vars + flat map ---------- */
+var ZC={"US-TX-HOUSTON":[29.76,-95.37],"US-CA-VALLEY":[36.7,-119.8],"EU-DE-BERLIN":[52.52,13.4],"AP-JP-TOKYO":[35.68,139.69]};
+var HRVARS={id:"HR-0001",sig:.92,lat:.86,up:.99,sync:.94,integ:1};
+var HK=["sig","lat","up","sync","integ"], HC=["#00c8d8","#a64dff","#1fae5f","#c78f00","#e0354f"];
+if(!RM) setInterval(function(){ HK.forEach(function(k){ HRVARS[k]=clamp(HRVARS[k]+(Math.random()-.5)*.06,.7,1); }); },1500);
+var nodes=[{name:"D3M13N 𖤐 CAPSULECRAFT",email:"origin-node",zone:"US-TX-HOUSTON",metric:"root · HR-0001",notes:"origin-node (root)"}];
+var mc=$("map2d"), mx2=mc.getContext("2d");
+function proj(la,lo,W,H){return [(lo+180)/360*W,(90-la)/180*H];}
+function drawMap(t){
+  var W=720,H=360;
+  var dark=window.matchMedia("(prefers-color-scheme: dark)").matches;
+  mx2.fillStyle=dark?"#05030c":"#0b0620"; mx2.fillRect(0,0,W,H);
+  mx2.strokeStyle="rgba(150,110,255,.30)"; mx2.lineWidth=1; mx2.beginPath();
+  for(var lo=-180;lo<=180;lo+=30){var a=proj(0,lo,W,H)[0]; mx2.moveTo(a,0); mx2.lineTo(a,H);}
+  for(var la=-90;la<=90;la+=30){var b=proj(la,0,W,H)[1]; mx2.moveTo(0,b); mx2.lineTo(W,b);}
+  mx2.stroke();
+  var rt=proj(ZC["US-TX-HOUSTON"][0],ZC["US-TX-HOUSTON"][1],W,H);
+  var seen={}; nodes.forEach(function(n,idx){ if(idx>0 && seen[n.zone]!==undefined) seen[n.zone]++; else if(idx>0) seen[n.zone]=1; });
+  mx2.font="10px monospace";
+  Object.keys(ZC).forEach(function(z,zi){
+    if(zi===0) return;
+    var p=proj(ZC[z][0],ZC[z][1],W,H), mxp=(rt[0]+p[0])/2, myp=Math.min(rt[1],p[1])-50;
+    mx2.strokeStyle="rgba(0,220,245,.45)"; mx2.beginPath(); mx2.moveTo(rt[0],rt[1]); mx2.quadraticCurveTo(mxp,myp,p[0],p[1]); mx2.stroke();
+    var u=RM?0.5:((t*.0002+zi*.3)%1), aa=(1-u)*(1-u), bb=2*u*(1-u), cc=u*u;
+    mx2.fillStyle="#ff4d5e"; mx2.fillRect(aa*rt[0]+bb*mxp+cc*p[0]-2, aa*rt[1]+bb*myp+cc*p[1]-2,4,4);
+    mx2.fillStyle="#00e5f5"; mx2.beginPath(); mx2.arc(p[0],p[1],4+(seen[z]||0),0,7); mx2.fill();
+    mx2.fillStyle="#dfe9ff"; mx2.fillText(z+(seen[z]?" +"+seen[z]:""),p[0]+8,p[1]+3);
+  });
+  var pu=RM?0:Math.sin(t*.003)*2, R=14+pu; mx2.lineWidth=4;
+  HK.forEach(function(k,ki){ var a0=ki*1.2566-1.5708; mx2.strokeStyle=HC[ki]; mx2.beginPath(); mx2.arc(rt[0],rt[1],R,a0,a0+(1.2566-.16)*HRVARS[k]); mx2.stroke(); });
+  mx2.fillStyle="#ff4d5e"; mx2.beginPath(); mx2.arc(rt[0],rt[1],5,0,7); mx2.fill();
+  mx2.fillStyle="#fff"; mx2.fillText("ORIGIN · "+HRVARS.id, rt[0]-34, rt[1]-R-8);
+  /* avatar + anti-pole dots */
+  var ap=proj(state.lat,state.lon,W,H), an=antiOf(state.lat,state.lon), anp=proj(an.lat,an.lon,W,H);
+  mx2.strokeStyle="rgba(255,211,107,.7)"; mx2.setLineDash([4,4]); mx2.lineWidth=1; mx2.beginPath(); mx2.moveTo(ap[0],ap[1]); mx2.lineTo(anp[0],anp[1]); mx2.stroke(); mx2.setLineDash([]);
+  mx2.fillStyle="#ffd36b"; mx2.beginPath(); mx2.arc(ap[0],ap[1],5,0,7); mx2.fill();
+  mx2.fillStyle="#00e5f5"; mx2.beginPath(); mx2.arc(anp[0],anp[1],5,0,7); mx2.fill();
+  $("hrLine").textContent=HRVARS.id+" · "+HK.map(function(k){return k+" "+HRVARS[k].toFixed(2);}).join(" · ")+" · gold dot = avatar · cyan dot = anti-pole";
+}
+
+/* ---------- globe ---------- */
+var gl=$("globe"), gx=gl.getContext("2d");
+function llToVec(lat,lon){
+  var la=lat*Math.PI/180, lo=lon*Math.PI/180;
+  return [Math.cos(la)*Math.sin(lo), Math.sin(la), Math.cos(la)*Math.cos(lo)];
+}
+function drawGlobe(now){
+  var W=gl.width, H=gl.height, cx=W/2, cy=H/2, R=W*0.46;
+  var dark=window.matchMedia("(prefers-color-scheme: dark)").matches;
+  gx.clearRect(0,0,W,H);
+  var vLat=state.viewLat*Math.PI/180, vLon=state.viewLon*Math.PI/180;
+  /* sphere base with day/night terminator */
+  var sun=sunPos(new Date()), sv=llToVec(sun.lat,sun.lon);
+  var img=gx.createImageData(1,1); /* placeholder to keep linters quiet */
+  gx.beginPath(); gx.arc(cx,cy,R,0,7); gx.fillStyle=dark?"#0a1a33":"#123a5e"; gx.fill();
+  gx.save(); gx.beginPath(); gx.arc(cx,cy,R,0,7); gx.clip();
+  /* graticule + shading via sampled points */
+  var step=4;
+  for(var py=cy-R; py<cy+R; py+=step){
+    for(var px=cx-R; px<cx+R; px+=step){
+      var dx=(px-cx)/R, dy=(cy-py)/R, dz2=1-dx*dx-dy*dy;
+      if(dz2<0) continue;
+      var dz=Math.sqrt(dz2);
+      /* rotate view: point in world coords */
+      var x1=dx, y1=dy, z1=dz;
+      var y2=y1*Math.cos(vLat)-z1*Math.sin(vLat), z2=y1*Math.sin(vLat)+z1*Math.cos(vLat);
+      var x3=x1*Math.cos(vLon)+z2*Math.sin(vLon), z3=-x1*Math.sin(vLon)+z2*Math.cos(vLon);
+      var dot=x3*sv[0]+y2*sv[1]+z3*sv[2];
+      var latW=Math.asin(clamp(y2,-1,1));
+      var land = Math.sin(latW*3.1+Math.sin(x3*4+z3*2))>0.55 || (Math.abs(y2)<0.12 && Math.cos(Math.atan2(z3,x3)*3)>0.6);
+      var base;
+      if(dot>0.12){ base=land?[46,150,90]:[38,110,180]; }
+      else if(dot>-0.12){ base=land?[110,95,60]:[60,80,130]; }
+      else { base=land?[24,40,34]:[10,22,52]; }
+      var tw=(dot+0.12)/0.24; tw=clamp(tw,0,1);
+      gx.fillStyle="rgb("+base[0]+","+base[1]+","+base[2]+")";
+      gx.fillRect(px,py,step,step);
+    }
+  }
+  /* graticule lines */
+  gx.strokeStyle="rgba(160,200,255,.16)"; gx.lineWidth=1;
+  for(var gLine=-60; gLine<=60; gLine+=30){
+    gx.beginPath();
+    for(var s=0;s<=90;s++){
+      var lo2=-180+s*4, v=llToVec(gLine,lo2);
+      var pr=project(v,vLat,vLon,cx,cy,R); if(!pr) { gx.moveTo(cx,cy); continue; }
+      if(s===0) gx.moveTo(pr[0],pr[1]); else gx.lineTo(pr[0],pr[1]);
+    }
+    gx.stroke();
+  }
+  gx.restore();
+  gx.beginPath(); gx.arc(cx,cy,R,0,7); gx.strokeStyle=dark?"rgba(0,229,245,.5)":"rgba(0,112,126,.6)"; gx.lineWidth=2; gx.stroke();
+  function project(v,vl,vo,cx2,cy2,R2){
+    var y2=v[1]*Math.cos(vl)-v[2]*Math.sin(vl), z2=v[1]*Math.sin(vl)+v[2]*Math.cos(vl);
+    var x3=v[0]*Math.cos(vo)+z2*Math.sin(vo), z3=-v[0]*Math.sin(vo)+z2*Math.cos(vo);
+    if(z3<=-0.02) return null;
+    return [cx2+x3*R2, cy2-y2*R2, z3];
+  }
+  /* dipole axis + markers */
+  var av=llToVec(state.lat,state.lon), an=antiOf(state.lat,state.lon), nv=llToVec(an.lat,an.lon);
+  var pa=project(av,vLat,vLon,cx,cy,R), pn2=project(nv,vLat,vLon,cx,cy,R);
+  var pulse=0.5+0.5*Math.sin(now/1000*state.bpm/60*2*Math.PI);
+  var antiPulse = state.mode==="union" ? pulse : 0.5+0.5*Math.sin(now/1000*state.bpm/60*2*Math.PI+Math.PI);
+  if(state.showAxis){
+    gx.strokeStyle="rgba(255,211,107,.75)"; gx.setLineDash([7,6]); gx.lineWidth=2; gx.beginPath();
+    var ax1=pa||[cx-av[0]*0,cy], ax2=pn2||[cx,cy];
+    /* draw through centre: use projected points, falling back to mirrored front point */
+    var f1=pa?pa:[cx-(pn2?pn2[0]-cx:0), cy-(pn2?pn2[1]-cy:0)];
+    var f2=pn2?pn2:[cx-(pa[0]-cx), cy-(pa[1]-cy)];
+    gx.moveTo(f1[0],f1[1]); gx.lineTo(cx,cy); gx.lineTo(f2[0],f2[1]); gx.stroke(); gx.setLineDash([]);
+    gx.fillStyle="#ffd36b"; gx.beginPath(); gx.arc(cx,cy,3,0,7); gx.fill();
+  }
+  /* reach ring around avatar */
+  if(pa){
+    var reachRad=state.reach/6371, rr=R*Math.sin(reachRad)*0.9;
+    gx.strokeStyle="rgba(255,211,107,.45)"; gx.lineWidth=1.5; gx.beginPath(); gx.arc(pa[0],pa[1],Math.max(6,rr*clamp(pa[2]+0.4,0.2,1)),0,7); gx.stroke();
+  }
+  function marker(p,col,r,phase,ghost){
+    gx.beginPath(); gx.arc(p[0],p[1],r*(0.85+0.3*phase),0,7);
+    if(ghost){ gx.strokeStyle=col; gx.lineWidth=2; gx.stroke(); }
+    else { gx.fillStyle=col; gx.fill(); gx.strokeStyle="#fff"; gx.lineWidth=1.5; gx.stroke(); }
+  }
+  if(pa) marker(pa,"#ffd36b",8,pulse,false); else if(pn2) marker([cx-(pn2[0]-cx),cy-(pn2[1]-cy)],"#ffd36b",8,pulse,true);
+  if(pn2) marker(pn2,"#00e5f5",8,antiPulse,false); else if(pa) marker([cx-(pa[0]-cx),cy-(pa[1]-cy)],"#00e5f5",8,antiPulse,true);
+  $("polePhase").textContent=pulse.toFixed(2);
+  $("antiPhase").textContent=antiPulse.toFixed(2);
+}
+/* globe interaction */
+var dragging=false,lastX=0,lastY=0,moved=false;
+gl.addEventListener("pointerdown",function(e){ dragging=true; moved=false; lastX=e.clientX; lastY=e.clientY; gl.setPointerCapture(e.pointerId); });
+gl.addEventListener("pointermove",function(e){
+  if(!dragging) return;
+  var dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
+  if(Math.abs(dx)+Math.abs(dy)>3) moved=true;
+  state.viewLon=normLon(state.viewLon+dx*0.4);
+  state.viewLat=clamp(state.viewLat+dy*0.4,-85,85);
+  state.spinning=false; $("spinBtn").textContent="Resume spin";
+});
+gl.addEventListener("pointerup",function(e){
+  dragging=false;
+  if(!moved){
+    var r=gl.getBoundingClientRect();
+    var nx=((e.clientX-r.left)/r.width)*2-1, ny=1-((e.clientY-r.top)/r.height)*2;
+    if(nx*nx+ny*ny<=1){
+      var dz=Math.sqrt(1-nx*nx-ny*ny);
+      var vLat=state.viewLat*Math.PI/180, vLon=state.viewLon*Math.PI/180;
+      var y1=ny, z1=dz;
+      var y2=y1*Math.cos(-vLat)-z1*Math.sin(-vLat), z2=y1*Math.sin(-vLat)+z1*Math.cos(-vLat);
+      var x3=nx*Math.cos(-vLon)+z2*Math.sin(-vLon), z3=-nx*Math.sin(-vLon)+z2*Math.cos(-vLon);
+      var lat=Math.asin(clamp(y2,-1,1))*180/Math.PI, lon=Math.atan2(x3,z3)*180/Math.PI;
+      setAvatar(lat,lon,"Avatar moved by globe click.");
+    }
+  }
+});
+$("spinBtn").addEventListener("click",function(){ state.spinning=!state.spinning; this.textContent=state.spinning?"Pause spin":"Resume spin"; });
+$("axisBtn").addEventListener("click",function(){ state.showAxis=!state.showAxis; this.textContent=state.showAxis?"Hide dipole axis":"Show dipole axis"; });
+$("goAntiBtn").addEventListener("click",function(){ var a=antiOf(state.lat,state.lon); state.viewLat=a.lat; state.viewLon=a.lon; state.spinning=false; $("spinBtn").textContent="Resume spin"; });
+$("flipBtn").addEventListener("click",function(){ var a=antiOf(state.lat,state.lon); setAvatar(a.lat,a.lon,"View flipped — the anti-pole is now the avatar pole."); state.viewLat=state.lat; state.viewLon=state.lon; });
+$("setPosBtn").addEventListener("click",function(){ var la=clamp(parseFloat($("latIn").value)||0,-90,90), lo=normLon(parseFloat($("lonIn").value)||0); setAvatar(la,lo,"Avatar position set."); state.viewLat=la; state.viewLon=lo; });
+$("houstonBtn").addEventListener("click",function(){ setAvatar(29.76,-95.37,"Avatar at the Houston origin-node."); state.viewLat=29.76; state.viewLon=-95.37; });
+
+function setAvatar(lat,lon,msg){
+  state.lat=clamp(lat,-90,90); state.lon=normLon(lon);
+  $("latIn").value=state.lat.toFixed(2); $("lonIn").value=state.lon.toFixed(2);
+  if(msg) $("globeStatus").textContent=msg;
+  refreshDerived();
+}
+$("angleIn").addEventListener("input",function(){ state.angle=+this.value; $("angleVal").textContent=state.angle+"°"; refreshDerived(); });
+$("reachIn").addEventListener("input",function(){ state.reach=+this.value; $("reachVal").textContent=state.reach+" km"; refreshDerived(); });
+$("bizName").addEventListener("input",refreshDerived);
+
+function refreshDerived(){
+  var d=new Date(), a=antiOf(state.lat,state.lon);
+  var sA=sunAt(state.lat,state.lon,d), sB=sunAt(a.lat,a.lon,d);
+  $("avPos").textContent=fmtLat(state.lat)+", "+fmtLon(state.lon);
+  $("avAnti").textContent=fmtLat(a.lat)+", "+fmtLon(a.lon);
+  $("avSun").textContent=sA.label;
+  $("sunHero").textContent=sA.label;
+  $("avLook").textContent=fmtLat(state.viewLat)+", "+fmtLon(state.viewLon);
+  $("hexAddr").textContent=hexAddr(state.lat,state.lon,state.angle,state.reach);
+  $("nonAddr").textContent=nonAddr(state.lat,state.lon,state.angle,state.reach);
+  $("reachInfo").textContent=state.reach.toLocaleString()+" km · "+state.angle+"° receptive cone";
+  $("poleCoords").textContent=fmtLat(state.lat)+", "+fmtLon(state.lon);
+  $("antiCoords").textContent=fmtLat(a.lat)+", "+fmtLon(a.lon);
+  $("poleSun").textContent=sA.label; $("antiSun").textContent=sB.label;
+  $("poleHex").textContent=hexAddr(state.lat,state.lon,state.angle,state.reach);
+  $("poleNon").textContent=nonAddr(state.lat,state.lon,state.angle,state.reach);
+  $("antiHex").textContent=hexAddr(a.lat,a.lon,state.angle,state.reach);
+  $("antiNon").textContent=nonAddr(a.lat,a.lon,state.angle,state.reach);
+  $("axisTilt").textContent=state.lat.toFixed(1)+"°";
+  $("encLoc").textContent=fmtLat(state.lat)+", "+fmtLon(state.lon);
+  $("encTilt").textContent=state.lat.toFixed(1)+"°";
+  $("encAnti").textContent=fmtLat(a.lat)+", "+fmtLon(a.lon);
+  $("encMac").textContent=emulatedMac(state.lat,state.lon);
+  drawAxisDiagram();
+}
+function emulatedMac(lat,lon){
+  var qLat=Math.round((lat+90)/0.0001), qLon=Math.round((normLon(lon)+180)/0.0001);
+  var h=(qLat*2654435761 ^ qLon*40503)>>>0;
+  function hb(n){return pad2((n&255).toString(16).toUpperCase());}
+  return "02:"+hb(h)+":"+hb(h>>8)+":"+hb(h>>16)+":"+hb(qLat)+":"+hb(qLon);
+}
+/* axis diagram */
+var axc=$("axisCanvas"), axx=axc.getContext("2d");
+function drawAxisDiagram(){
+  var W=300,H=120,cx=W/2,cy=H/2;
+  axx.clearRect(0,0,W,H);
+  var dark=window.matchMedia("(prefers-color-scheme: dark)").matches;
+  axx.strokeStyle=dark?"rgba(0,229,245,.5)":"rgba(0,112,126,.6)"; axx.lineWidth=1.5;
+  axx.beginPath(); axx.arc(cx,cy,42,0,7); axx.stroke();
+  var tilt=state.lat*Math.PI/180, dx=Math.sin(tilt)*52, dy=-Math.cos(tilt)*52;
+  axx.strokeStyle="#c78f00"; axx.setLineDash([5,4]); axx.beginPath(); axx.moveTo(cx-dx,cy-dy); axx.lineTo(cx+dx,cy+dy); axx.stroke(); axx.setLineDash([]);
+  axx.fillStyle="#ffd36b"; axx.beginPath(); axx.arc(cx+dx,cy+dy,6,0,7); axx.fill();
+  axx.fillStyle="#00e5f5"; axx.beginPath(); axx.arc(cx-dx,cy-dy,6,0,7); axx.fill();
+  axx.fillStyle=dark?"#efe9ff":"#1a1033"; axx.font="10px monospace";
+  axx.fillText("POLE",cx+dx+9,cy+dy+3); axx.fillText("ANTI",cx-dx-32,cy-dy+3);
+}
+
+/* ---------- Dupode mode ---------- */
+$("modeUnion").addEventListener("click",function(){ setMode("union"); });
+$("modeOpp").addEventListener("click",function(){ setMode("opposite"); });
+function setMode(m){
+  state.mode=m;
+  $("modeUnion").classList.toggle("on",m==="union");
+  $("modeOpp").classList.toggle("on",m==="opposite");
+}
+function updatePulseChip(){
+  $("pulseChip").textContent="Pulse source: "+(state.live?"LIVE ring":"demo")+" · "+Math.round(state.bpm)+" bpm · "+(state.mode==="union"?"Union":"Opposite");
+  $("encSync").textContent=Math.round(state.bpm)+" bpm · "+(state.live?"LIVE":"demo");
+}
+
+/* ---------- main loop ---------- */
+function loop(now){
+  requestAnimationFrame(loop);
+  if(state.spinning && !dragging) state.viewLon=normLon(state.viewLon+0.05);
+  drawGlobe(now||0);
+  drawMap(now||0);
+  /* keep looking-at fresh */
+  $("avLook").textContent=fmtLat(state.viewLat)+", "+fmtLon(state.viewLon);
+}
+setInterval(refreshDerived,5000);
+refreshDerived(); updatePulseChip();
+window.__cc={state:state,setAvatar:setAvatar,refreshDerived:refreshDerived,updatePulseChip:updatePulseChip,antiOf:antiOf,normLon:normLon,nodes:nodes};
+requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+(function(){
+"use strict";
+var RM=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function $(id){return document.getElementById(id);}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+var CC=window.__cc, S=CC.state;
+
+/* ================= ENCAPSULATION CANVAS ================= */
+var enc=$("encCanvas"), ex=enc.getContext("2d");
+var geoWatch=null;
+function drawEnc(now){
+  requestAnimationFrame(drawEnc);
+  var t=RM?0:now/1000, W=460,H=529, dark=window.matchMedia("(prefers-color-scheme: dark)").matches;
+  ex.clearRect(0,0,W,H);
+  /* planet */
+  ex.fillStyle=dark?"#0d2242":"#16406e";
+  ex.beginPath(); ex.arc(W/2,H+330,430,0,7); ex.fill();
+  ex.strokeStyle=dark?"rgba(0,229,245,.35)":"rgba(0,112,126,.5)";
+  for(var i=0;i<4;i++){ ex.beginPath(); ex.arc(W/2,H+330,430-i*36,Math.PI*1.22,Math.PI*1.78); ex.stroke(); }
+  var groundY=H-118, cx=W/2;
+  /* sun direction arrow */
+  var sunA=-0.7+0.25*Math.sin(t*0.1);
+  ex.strokeStyle="#ffd36b"; ex.lineWidth=3; ex.beginPath();
+  ex.moveTo(cx+Math.cos(sunA)*190, 60+Math.sin(sunA)*30); ex.lineTo(cx+Math.cos(sunA)*120, 92+Math.sin(sunA)*20); ex.stroke();
+  ex.fillStyle="#ffd36b"; ex.font="11px monospace"; ex.fillText("SUN →",cx+Math.cos(sunA)*190-14,52+Math.sin(sunA)*30);
+  /* radial alignment line */
+  ex.strokeStyle="rgba(255,211,107,.8)"; ex.setLineDash([6,5]); ex.lineWidth=2;
+  ex.beginPath(); ex.moveTo(cx,groundY+70); ex.lineTo(cx,58); ex.stroke(); ex.setLineDash([]);
+  ex.fillStyle=dark?"#a794d6":"#5c4a8c"; ex.font="10px monospace"; ex.fillText("RADIAL · LOCAL UP",cx+10,74);
+  /* pulse ring synced to bpm */
+  var pulse=0.5+0.5*Math.sin(now/1000*S.bpm/60*2*Math.PI);
+  ex.strokeStyle="rgba(255,211,107,"+(0.25+0.45*pulse)+")"; ex.lineWidth=2.5;
+  ex.beginPath(); ex.ellipse(cx,groundY,86+16*pulse,10+3*pulse,0,0,7); ex.stroke();
+  /* capsule shell */
+  var capTop=86, capBot=groundY+6, breathe=RM?0:Math.sin(t*1.4)*2.5;
+  ex.strokeStyle=dark?"rgba(0,229,245,.85)":"rgba(0,112,126,.85)"; ex.lineWidth=2.5;
+  ex.beginPath();
+  ex.moveTo(cx-72,capBot); ex.lineTo(cx-72,capTop+52+breathe);
+  ex.quadraticCurveTo(cx-72,capTop+breathe,cx,capTop+breathe);
+  ex.quadraticCurveTo(cx+72,capTop+breathe,cx+72,capTop+52+breathe);
+  ex.lineTo(cx+72,capBot); ex.stroke();
+  ex.strokeStyle="#c78f00"; ex.lineWidth=1.5;
+  ex.beginPath(); ex.moveTo(cx-72,capTop+120+breathe); ex.lineTo(cx+72,capTop+120+breathe); ex.stroke();
+  ex.beginPath(); ex.moveTo(cx-72,capBot-58); ex.lineTo(cx+72,capBot-58); ex.stroke();
+  ex.fillStyle="#c78f00"; ex.font="10px monospace"; ex.fillText("CAPSULE SHELL",cx+80,capTop+124+breathe);
+  /* humanoid avatar */
+  var sway=RM?0:Math.sin(t*0.9)*3, step=RM?0:Math.sin(t*2.2), turn=RM?0:Math.sin(t*0.45);
+  var hipY=groundY-96+breathe*0.4, shY=hipY-64, headY=shY-30;
+  ex.strokeStyle=dark?"#efe9ff":"#241245"; ex.fillStyle=dark?"#efe9ff":"#241245"; ex.lineWidth=6; ex.lineCap="round";
+  /* legs */
+  ex.beginPath(); ex.moveTo(cx+sway,hipY); ex.lineTo(cx-13,hipY+44); ex.lineTo(cx-13+step*6,groundY); ex.stroke();
+  ex.beginPath(); ex.moveTo(cx+sway,hipY); ex.lineTo(cx+13,hipY+44); ex.lineTo(cx+13-step*6,groundY); ex.stroke();
+  /* torso */
+  ex.beginPath(); ex.moveTo(cx+sway,hipY); ex.lineTo(cx+sway*1.2,shY); ex.stroke();
+  /* arms */
+  var armSw=RM?0:Math.sin(t*2.2)*10;
+  ex.lineWidth=5;
+  ex.beginPath(); ex.moveTo(cx+sway*1.2,shY+4); ex.lineTo(cx-30+turn*6,shY+36+armSw); ex.stroke();
+  ex.beginPath(); ex.moveTo(cx+sway*1.2,shY+4); ex.lineTo(cx+30+turn*6,shY+36-armSw); ex.stroke();
+  /* head + visor */
+  ex.beginPath(); ex.arc(cx+sway*1.2,headY,17,0,7); ex.fill();
+  ex.fillStyle="#00e5f5"; ex.beginPath(); ex.ellipse(cx+sway*1.2+turn*7,headY-1,9,5.5,0,0,7); ex.fill();
+  /* chest core pulsing with heart */
+  ex.fillStyle="#ff4d5e"; ex.beginPath(); ex.arc(cx+sway*1.2,shY+22,4+2.4*pulse,0,7); ex.fill();
+  ex.fillStyle=dark?"#efe9ff":"#1a1033"; ex.font="11px monospace"; ex.textAlign="center";
+  ex.fillText(S.lat.toFixed(2)+"°, "+S.lon.toFixed(2)+"° · tilt = latitude "+S.lat.toFixed(1)+"°",cx,H-16);
+  ex.textAlign="left";
+}
+requestAnimationFrame(drawEnc);
+$("geoBtn").addEventListener("click",function(){
+  if(!navigator.geolocation){ $("geoStatus").textContent="Geolocation is not available in this browser."; return; }
+  $("geoStatus").textContent="Requesting location…";
+  navigator.geolocation.getCurrentPosition(geoOk,geoErr,{enableHighAccuracy:true,timeout:12000});
+});
+$("geoWatchBtn").addEventListener("click",function(){
+  if(!navigator.geolocation){ $("geoStatus").textContent="Geolocation is not available in this browser."; return; }
+  if(geoWatch!==null) return;
+  geoWatch=navigator.geolocation.watchPosition(geoOk,geoErr,{enableHighAccuracy:true,timeout:15000});
+  $("geoStopBtn").disabled=false; $("geoStatus").textContent="Watching location — capsule follows as you move.";
+});
+$("geoStopBtn").addEventListener("click",function(){
+  if(geoWatch!==null){ navigator.geolocation.clearWatch(geoWatch); geoWatch=null; }
+  this.disabled=true; $("geoStatus").textContent="Watch stopped. Last position kept.";
+});
+function geoOk(pos){
+  CC.setAvatar(pos.coords.latitude,pos.coords.longitude,"Avatar moved to your real location.");
+  $("encSrc").textContent="Browser Geolocation";
+  $("encAcc").textContent="± "+Math.round(pos.coords.accuracy)+" m";
+  $("geoStatus").textContent="Location applied — globe, Dupode, capsule and emulated MAC updated together.";
+  CC.refreshDerived();
+}
+function geoErr(err){
+  $("geoStatus").textContent="Location unavailable ("+err.message+"). Nothing was guessed — the avatar stays where it was.";
+}
+
+/* ================= TELEMETRY ================= */
+var RADIO=[
+ {ts:"2026-11-15 04:24:00",pci:531,nci:6448927021},
+ {ts:"2026-11-15 04:24:01",pci:89,nci:6448111919}
+];
+var radioIdx=0, radioTimer=null;
+function showRadio(){
+  var r=RADIO[radioIdx];
+  $("rTs").textContent=r.ts; $("rPci").textContent=r.pci; $("rNci").textContent=r.nci;
+  $("radioStatus").textContent="Sample "+(radioIdx+1)+" of 2 · serving cell PCI "+r.pci+" · NCI "+r.nci+" · no WEAK_LINK at −99 dBm.";
+  if(S.consent) renderFrame();
+}
+$("radioPrev").addEventListener("click",function(){ radioIdx=(radioIdx+RADIO.length-1)%RADIO.length; showRadio(); });
+$("radioNext").addEventListener("click",function(){ radioIdx=(radioIdx+1)%RADIO.length; showRadio(); });
+$("radioPlay").addEventListener("click",function(){
+  if(radioTimer){ clearInterval(radioTimer); radioTimer=null; this.textContent="Play"; }
+  else { var b=this; radioTimer=setInterval(function(){ radioIdx=(radioIdx+1)%RADIO.length; showRadio(); },1400); b.textContent="Pause"; }
+});
+var rrWindow=[], frameTimer=null, frameCount=0;
+function stressProxy(bpm,rmssd){
+  var hrC=clamp((bpm-62)/40,0,1), hrvC=clamp((45-rmssd)/45,0,1);
+  return clamp(0.6*hrC+0.4*hrvC,0,1);
+}
+function pushRR(rr){
+  rrWindow.push(rr); if(rrWindow.length>60) rrWindow.shift();
+  if(rrWindow.length>=8){
+    var sum=0; for(var i=1;i<rrWindow.length;i++){ var d=rrWindow[i]-rrWindow[i-1]; sum+=d*d; }
+    S.rmssd=Math.sqrt(sum/(rrWindow.length-1));
+  }
+  $("bridgeWin").textContent=rrWindow.length+" / 60 intervals"+(rrWindow.length>=8?" · RMSSD live":" · needs ≥ 8");
+}
+function currentFrame(){
+  var r=RADIO[radioIdx];
+  var stress=S.live?stressProxy(S.bpm,S.rmssd):S.stress;
+  var flags=[];
+  if(stress>0.75) flags.push("HIGH_STRESS");
+  if(!S.live){
+    if(S.temp<35.5||S.temp>37.8) flags.push("TEMP_OUT_OF_RANGE");
+    if(S.batt<20) flags.push("LOW_BATTERY");
+    if(S.spo2<92) flags.push("LOW_SPO2");
+  } else {
+    if(S.batt!==null && S.batt<20) flags.push("LOW_BATTERY");
+  }
+  /* RSRP -99 > -110 → no WEAK_LINK for these samples */
+  return {
+    device_id:"SELF-4179", ring:"R01L 4179", ts:new Date().toISOString(),
+    source:S.live?"live-web-bluetooth":"demo",
+    heart_rate_bpm:Math.round(S.bpm),
+    hrv_rmssd_ms:Math.round(S.rmssd*10)/10,
+    stress_proxy:Math.round(stress*100)/100,
+    core_temp_c:S.live?null:(Math.round(S.temp*10)/10),
+    spo2_pct:S.live?null:S.spo2,
+    battery_pct:S.live?S.batt:S.battDemo,
+    radio:{rat:"NR SA",band:41,rsrp_dbm:-99,rsrq_db:-15,sinr_db:1,pci:r.pci,nci:r.nci,tac:8222976,mcc:310,mnc:260},
+    anomalies:flags,
+    dispatch:"PENDING_SUPERVISOR_APPROVAL"
+  };
+}
+S.temp=36.6; S.spo2=98; S.battDemo=87; S.steps=4213; S.batt=null;
+function renderFrame(){
+  if(!S.consent) return;
+  var f=currentFrame();
+  $("tHr").textContent=f.heart_rate_bpm+" bpm"+(S.live?" · LIVE":"");
+  $("tHrv").textContent=f.hrv_rmssd_ms+" ms";
+  $("tStress").textContent=f.stress_proxy.toFixed(2)+(f.stress_proxy>0.75?" · HIGH":"");
+  $("tTemp").textContent=S.live?"unavailable on standard service":f.core_temp_c.toFixed(1)+" °C / 33.4 °C skin";
+  $("tSpo2").textContent=S.live?"unavailable on standard service":f.spo2_pct+" %";
+  $("tSteps").textContent=S.live?"unavailable on standard service":S.steps.toLocaleString();
+  $("tBatt").textContent=(S.live?(S.batt===null?"not exposed":S.batt+" %"):S.battDemo+" %");
+  $("tStatus").textContent=f.anomalies.length?"ANOMALY — welfare check":"OK · HOME sector";
+  $("tFlags").innerHTML=f.anomalies.length?f.anomalies.map(function(x){return '<span class="flag">'+x+'</span>';}).join(""):'<span class="flag ok">NONE</span>';
+  $("welfareChip").style.display=f.anomalies.indexOf("HIGH_STRESS")>=0?"inline-block":"none";
+  $("frameJson").textContent=JSON.stringify(f,null,2);
+  CC.updatePulseChip();
+}
+function demoTick(){
+  if(!S.consent||S.live) return;
+  if(S.spike){ S.bpm+= (118-S.bpm)*0.25+Math.random()*3; S.rmssd+=(18-S.rmssd)*0.25; }
+  else { S.bpm=62+(Math.random()-0.5)*7; S.rmssd=45+(Math.random()-0.5)*9; }
+  S.stress=stressProxy(S.bpm,S.rmssd)*(S.spike?1.35:1);
+  S.temp=36.6+(Math.random()-0.5)*0.3; S.spo2=Math.round(clamp(98+(Math.random()-0.5)*2,94,100));
+  S.battDemo=clamp(S.battDemo-(frameCount%47===0?1:0),0,100); S.steps+=Math.round(Math.random()*4);
+  pushRR(60000/Math.max(30,S.bpm)+(Math.random()-0.5)*36);
+  frameCount++; renderFrame();
+}
+$("consentBtn").addEventListener("click",function(){
+  S.consent=true;
+  $("consentChip").textContent="CONSENT ACTIVE · heart_rate, device"; $("consentChip").classList.add("live");
+  $("withdrawBtn").disabled=false; this.disabled=true;
+  $("spikeBtn").disabled=false; $("calmBtn").disabled=false;
+  $("noFrame").style.display="none"; $("frameData").style.display="block";
+  renderFrame();
+  if(frameTimer) clearInterval(frameTimer);
+  frameTimer=setInterval(demoTick,1200); demoTick();
+});
+$("withdrawBtn").addEventListener("click",function(){
+  S.consent=false; S.spike=false;
+  if(frameTimer){ clearInterval(frameTimer); frameTimer=null; }
+  rrWindow=[];
+  $("consentChip").textContent="NO CONSENT · FRAME PURGED"; $("consentChip").classList.remove("live");
+  $("consentBtn").disabled=false; this.disabled=true;
+  $("spikeBtn").disabled=true; $("calmBtn").disabled=true;
+  $("noFrame").style.display="block"; $("noFrame").textContent="Frame purged on consent withdrawal. Grant consent to start a new stream.";
+  $("frameData").style.display="none"; $("frameJson").textContent="null — frame purged.";
+  $("welfareChip").style.display="none";
+  $("bridgeWin").textContent="0 / 60 intervals · needs ≥ 8";
+});
+$("spikeBtn").addEventListener("click",function(){ S.spike=true; demoTick(); });
+$("calmBtn").addEventListener("click",function(){ S.spike=false; demoTick(); });
+showRadio();
+
+/* ================= WEB BLUETOOTH LIVE RING ================= */
+var bleDevice=null, bleChar=null;
+function hexBytes(dv){ var s=[]; for(var i=0;i<dv.byteLength;i++) s.push(dv.getUint8(i).toString(16).toUpperCase().padStart(2,"0")); return s.join(" "); }
+function onHr(ev){
+  var dv=ev.target.value, flags=dv.getUint8(0), off=1, bpm;
+  if(flags&1){ bpm=dv.getUint16(1,true); off=3; } else { bpm=dv.getUint8(1); off=2; }
+  S.bpm=bpm; S.live=true;
+  $("bridgeHex").textContent=hexBytes(dv);
+  if(flags&16){ /* RR intervals present, units of 1/1024 s */
+    while(off+1<dv.byteLength){ var rr=dv.getUint16(off,true)/1024*1000; off+=2; if(rr>200&&rr<2500) pushRR(rr); }
+  }
+  S.stress=stressProxy(S.bpm,S.rmssd);
+  $("bleChip").textContent="● LIVE · "+bpm+" bpm"; $("bleChip").classList.add("live");
+  if(S.consent) renderFrame(); CC.updatePulseChip();
+}
+function bleFail(msg){ $("bleStatus").textContent=msg; }
+async function connectRing(all){
+  if(!navigator.bluetooth){ bleFail("Web Bluetooth is not available in this browser — the labelled demo stream stays as fallback."); return; }
+  try{
+    $("bleStatus").textContent="Opening the Bluetooth picker — pick R01L 4179…";
+    var opts=all?{acceptAllDevices:true,optionalServices:["heart_rate","battery_service"]}:{filters:[{services:["heart_rate"]}],optionalServices:["battery_service"]};
+    bleDevice=await navigator.bluetooth.requestDevice(opts);
+    bleDevice.addEventListener("gattserverdisconnected",function(){
+      S.live=false; $("bleChip").textContent="DEMO STREAM"; $("bleChip").classList.remove("live");
+      $("bleDiscBtn").disabled=true; bleFail("Ring disconnected — demo stream resumed as fallback."); CC.updatePulseChip(); if(S.consent) renderFrame();
+    });
+    var server=await bleDevice.gatt.connect();
+    var svc=await server.getPrimaryService("heart_rate");
+    bleChar=await svc.getCharacteristic("heart_rate_measurement");
+    await bleChar.startNotifications();
+    bleChar.addEventListener("characteristicvaluechanged",onHr);
+    try{
+      var bs=await server.getPrimaryService("battery_service");
+      var bc=await bs.getCharacteristic("battery_level");
+      var bv=await bc.readValue(); S.batt=bv.getUint8(0);
+    }catch(e){ S.batt=null; }
+    $("bleDiscBtn").disabled=false;
+    $("bleStatus").textContent="Connected to "+(bleDevice.name||"ring")+" · subscribed to 0x2A37"+(S.batt!==null?" · battery "+S.batt+" % (0x2A19)":" · battery not exposed")+". Live values feed the frame only after consent is granted.";
+    if(!S.consent) $("bleStatus").textContent+=" Grant consent in this panel to see the live TelemetryFrame.";
+  }catch(e){
+    bleFail("Live connection not started: "+(e&&e.message?e.message:e)+". Check the vendor app is closed and the ring is awake, or keep using the demo stream.");
+  }
+}
+$("bleBtn").addEventListener("click",function(){ connectRing(false); });
+$("bleAllBtn").addEventListener("click",function(){ connectRing(true); });
+$("bleDiscBtn").addEventListener("click",function(){ if(bleDevice&&bleDevice.gatt&&bleDevice.gatt.connected) bleDevice.gatt.disconnect(); });
+if(!navigator.bluetooth) $("bleStatus").textContent="Web Bluetooth is unavailable in this browser, so no live link can start here — the labelled demo stream is available as fallback once consent is granted above. In Chrome / Edge on the device with the ring, this button opens the picker for R01L 4179.";
+
+/* ================= SENSORS ================= */
+$("compassBtn").addEventListener("click",function(){
+  function start(){
+    window.addEventListener("deviceorientation",function(ev){
+      if(ev.alpha!==null) $("compassVal").textContent=Math.round((360-ev.alpha)%360)+"° heading";
+    });
+    $("sensorStatus").textContent="Compass listening — rotate the device. On desktop browsers without a compass sensor, the reading stays off.";
+    $("compassVal").textContent="listening…";
+  }
+  if(typeof DeviceOrientationEvent!=="undefined" && typeof DeviceOrientationEvent.requestPermission==="function"){
+    DeviceOrientationEvent.requestPermission().then(function(r){ if(r==="granted") start(); else $("compassVal").textContent="permission declined"; }).catch(function(){ $("compassVal").textContent="unavailable on this device"; });
+  } else if("DeviceOrientationEvent" in window){ start(); }
+  else $("compassVal").textContent="no compass API in this browser";
+});
+$("btVal").textContent=navigator.bluetooth?"API available · use Connect live ring in Telemetry":"API unavailable in this browser";
+$("nfcBtn").addEventListener("click",async function(){
+  if(!("NDEFReader" in window)){ $("nfcVal").textContent="Web NFC unavailable in this browser"; return; }
+  try{
+    var reader=new NDEFReader(); await reader.scan(); $("nfcVal").textContent="scanning… hold a tag near the device";
+    reader.addEventListener("reading",function(ev){ $("nfcVal").textContent="tag read · serial "+(ev.serialNumber||"unknown"); });
+  }catch(e){ $("nfcVal").textContent="NFC start failed: "+e.message; }
+});
+
+/* ================= GATEWAY DEMO ================= */
+var gwCode=null;
+$("gwSend").addEventListener("click",function(){
+  gwCode=String(Math.floor(100000+Math.random()*900000));
+  $("gwCodeLine").innerHTML="Demo code (shown here — nothing was actually sent): <strong class='mono' style='font-size:17px'>"+gwCode+"</strong>"+($("gwContact").value?" · for "+$("gwContact").value.replace(/</g,"&lt;"):"");
+  $("gwStatus").textContent="Enter the code above to verify.";
+});
+$("gwVerify").addEventListener("click",function(){
+  if(!gwCode){ $("gwStatus").textContent="No code yet — tap “Show demo code” first."; return; }
+  $("gwStatus").textContent=$("gwCode").value.trim()===gwCode?"✓ Verified — this confirms you could read a code shown in this browser, nothing more.":"✗ That doesn't match the demo code.";
+});
+
+/* ================= EMBLEM COMPILER ================= */
+var lastSvg="";
+function compileEmblem(){
+  var txt=($("emblemText").value||"").toLowerCase();
+  var col=txt.indexOf("violet")>=0?"#a64dff":(txt.indexOf("cyan")>=0?"#00b7c9":"#c78f00");
+  if(txt.indexOf("gold")>=0) col="#c78f00";
+  var parts=['<circle cx="100" cy="100" r="96" fill="none" stroke="'+col+'" stroke-width="2" opacity="0.5"/>'];
+  if(txt.indexOf("ring")>=0) parts.push('<circle cx="100" cy="100" r="62" fill="none" stroke="'+col+'" stroke-width="5"/>');
+  if(txt.indexOf("crystal")>=0) parts.push('<polygon points="100,28 138,100 100,172 62,100" fill="none" stroke="'+col+'" stroke-width="4"/><polygon points="100,52 122,100 100,148 78,100" fill="'+col+'" opacity="0.35"/>');
+  if(txt.indexOf("wing")>=0){ parts.push('<path d="M100 100 Q 30 60 14 96 Q 44 104 60 122 Z" fill="'+col+'" opacity="0.7"/><path d="M100 100 Q 170 60 186 96 Q 156 104 140 122 Z" fill="'+col+'" opacity="0.7"/>'); }
+  if(txt.indexOf("spike")>=0){ for(var i=0;i<8;i++){ var a=i*Math.PI/4; parts.push('<polygon points="'+(100+Math.cos(a)*66)+','+(100+Math.sin(a)*66)+' '+(100+Math.cos(a+0.16)*84)+','+(100+Math.sin(a+0.16)*84)+' '+(100+Math.cos(a)*92)+','+(100+Math.sin(a)*92)+'" fill="'+col+'"/>'); } }
+  if(txt.indexOf("star")>=0) parts.push('<polygon points="100,44 112,86 156,86 120,110 134,152 100,126 66,152 80,110 44,86 88,86" fill="'+col+'" opacity="0.85"/>');
+  if(txt.indexOf("wave")>=0) parts.push('<path d="M28 128 Q 52 104 76 128 T 124 128 T 172 128" fill="none" stroke="'+col+'" stroke-width="5"/>');
+  if(parts.length===1) parts.push('<circle cx="100" cy="100" r="34" fill="'+col+'" opacity="0.8"/>');
+  lastSvg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">'+parts.join("")+"</svg>";
+  $("emblemOut").innerHTML=lastSvg;
+  $("emblemDl").disabled=false;
+  $("emblemStatus").textContent="Compiled from keywords in: “"+$("emblemText").value+"”.";
+}
+$("emblemBtn").addEventListener("click",compileEmblem);
+compileEmblem();
+$("emblemDl").addEventListener("click",function(){
+  var blob=new Blob([lastSvg],{type:"image/svg+xml"}), url=URL.createObjectURL(blob);
+  var a=document.createElement("a"); a.href=url; a.download="capsulecraft-emblem.svg"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(url); },2000);
+});
+$("emblemImg").addEventListener("change",function(){
+  var f=this.files&&this.files[0]; if(!f) return;
+  var img=new Image(), url=URL.createObjectURL(f);
+  img.onload=function(){
+    var c=document.createElement("canvas"), N=48; c.width=N; c.height=N;
+    var ctx=c.getContext("2d"); ctx.drawImage(img,0,0,N,N);
+    var d=ctx.getImageData(0,0,N,N).data;
+    for(var i=0;i<d.length;i+=4){ var g=Math.round(0.3*d[i]+0.59*d[i+1]+0.11*d[i+2]); d[i]=g; d[i+1]=Math.round(g*0.85); d[i+2]=Math.round(g*1.4); }
+    ctx.putImageData(new ImageData(d,N,N),0,0);
+    var out=$("heightOut"); out.src=c.toDataURL(); out.style.display="block";
+    $("emblemStatus").textContent="Heightmap built from “"+f.name+"” — brightness mapped to a violet relief palette, 48×48.";
+    URL.revokeObjectURL(url);
+  };
+  img.src=url;
+});
+
+/* ================= REGISTER / REGISTRY ================= */
+var tb=$("tb");
+function renderRegistry(){
+  tb.textContent="";
+  CC.nodes.forEach(function(n){
+    var tr=document.createElement("tr");
+    [n.name,n.email,n.zone,n.metric,n.notes].forEach(function(v){ var td=document.createElement("td"); td.textContent=v||""; tr.appendChild(td); });
+    tb.appendChild(tr);
+  });
+  $("sN").textContent=(1047+CC.nodes.length).toLocaleString();
+}
+CC.renderRegistry=renderRegistry; renderRegistry();
+$("regForm").addEventListener("submit",function(ev){
+  ev.preventDefault();
+  CC.nodes.push({name:$("n").value,email:$("e").value,zone:$("z").value,metric:$("m").value,notes:$("o").value});
+  renderRegistry(); ev.target.reset();
+  $("ok").textContent="Node registered — it now appears on the zone map and in the registry.";
+  setTimeout(function(){ $("ok").textContent=""; },4000);
+});
+})();
+</script>
+
+<script>
+/* ================= CAPSULE POV · THREE.JS ================= */
+(function(){
+"use strict";
+var RM=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function $(id){return document.getElementById(id);}
+if(typeof THREE==="undefined"){ $("vrStatus").textContent="The 3D library could not load (network required for the CDN) — the rest of the portal works without it."; return; }
+try{
+var bx=$("stage"), renderer=new THREE.WebGLRenderer({canvas:$("c3"),antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+var sc=new THREE.Scene(); sc.background=new THREE.Color(0x05030c);
+var cam=new THREE.PerspectiveCamera(78,1,0.05,300);
+function fit(){ var w=bx.clientWidth,h=bx.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); }
+if(window.ResizeObserver) new ResizeObserver(fit).observe(bx); fit();
+function mat(c,o){ var p={color:c,wireframe:true,transparent:true,opacity:.5}; if(o) for(var k in o) p[k]=o[k]; return new THREE.MeshBasicMaterial(p); }
+function grid(R,n,col,op){
+  var g=new THREE.Group(), m=new THREE.LineBasicMaterial({color:col,transparent:true,opacity:op}), i,j,k;
+  for(i=1;i<n;i++){ var t=Math.PI*i/n, rr=R*Math.sin(t), y=R*Math.cos(t), p=[];
+    for(k=0;k<=48;k++){ var a=k/48*6.283; p.push(new THREE.Vector3(rr*Math.cos(a),y,rr*Math.sin(a))); }
+    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(p),m)); }
+  for(j=0;j<n*2;j++){ var a2=Math.PI*j/n, p2=[];
+    for(k=0;k<=48;k++){ var t2=k/48*6.283; p2.push(new THREE.Vector3(R*Math.sin(t2)*Math.cos(a2),R*Math.cos(t2),R*Math.sin(t2)*Math.sin(a2))); }
+    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(p2),m)); }
+  return g;
+}
+var A=grid(14,12,0x00f0ff,0.28); sc.add(A);
+var B=new THREE.Group(); B.position.set(0,0,-22); sc.add(B); B.add(grid(7,10,0xffd36b,0.55));
+[[1,0,0,0xff4d5e],[0,1,0,0x00ff66],[0,0,1,0x00f0ff]].forEach(function(a){
+  B.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(a[0]*8,a[1]*8,a[2]*8)]),new THREE.LineBasicMaterial({color:a[3]})));
+});
+var head=new THREE.Group(); B.add(head);
+head.add(new THREE.Mesh(new THREE.SphereGeometry(2.2,20,14),mat(0xcfe9ff,{opacity:.45})));
+var core=new THREE.Mesh(new THREE.IcosahedronGeometry(0.8,1),new THREE.MeshBasicMaterial({color:0xff4d5e,wireframe:true})); head.add(core);
+[-1,1].forEach(function(s){ var w=new THREE.Mesh(new THREE.ConeGeometry(0.5,2.4,4),mat(0xffd36b,{opacity:.9})); w.position.set(s*2.3,0.4,0); w.rotation.z=s*-1.9; head.add(w); });
+var bot=new THREE.Group(); B.add(bot);
+var SC=[0x00f0ff,0x00ff66,0xffd36b,0xd58bff,0xff8a5e];
+var sn=SC.map(function(c){ var m=new THREE.Mesh(new THREE.OctahedronGeometry(0.42),new THREE.MeshBasicMaterial({color:c})); bot.add(m); return m; });
+var rg=new THREE.Mesh(new THREE.TorusGeometry(4.2,0.03,6,70),new THREE.MeshBasicMaterial({color:0xffd36b})); rg.rotation.x=Math.PI/2; bot.add(rg);
+var rb=new THREE.Group(); rb.position.set(26,-3,-10); sc.add(rb);
+[[2.4,3,1.6,0,0],[1.4,1.2,1.2,0,2.2],[0.6,2.4,0.6,-1.7,0],[0.6,2.4,0.6,1.7,0],[0.7,2.4,0.7,-0.6,-2.7],[0.7,2.4,0.7,0.6,-2.7]].forEach(function(a){
+  var m=new THREE.Mesh(new THREE.BoxGeometry(a[0],a[1],1),mat(0xcfe9ff,{opacity:.7})); m.scale.z=a[0]>2?1.6:0.8; m.position.set(a[3],a[4],0); rb.add(m);
+});
+var cone=new THREE.Mesh(new THREE.ConeGeometry(4,9,14,1,true),mat(0xff4d5e,{opacity:.25})); cone.position.set(-4.5,2.2,0); cone.rotation.z=Math.PI/2; rb.add(cone);
+var hp=new THREE.Vector3(), rp=new THREE.Vector3();
+var lg=new THREE.BufferGeometry().setFromPoints([hp,rp]);
+var link=new THREE.Line(lg,new THREE.LineDashedMaterial({color:0x00f0ff,dashSize:.6,gapSize:.4})); sc.add(link);
+var pk=[]; for(var i=0;i<14;i++){ var pm=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.28,0.28),new THREE.MeshBasicMaterial({color:i%2?0xff4d5e:0x00f0ff})); pm.userData={t:i/14,d:i%2?1:-1}; sc.add(pm); pk.push(pm); }
+var stops=[
+ {p:[0,0,0],l:[0,0,-22],t:"Capsule A · outer shell",d:"Stop 1 of 4 — Capsule A, outer shell. The wireframe sphere is the Omni-lens; capsule B, the Hermes avatar head and the robot sit deeper along the axis."},
+ {p:[0,0,-12],l:[0,0,-22],t:"Capsule B · grid capsule",d:"Stop 2 of 4 — inside capsule B, the gold grid capsule. The red / green / blue lines are its local axes."},
+ {p:[0,0.6,-18],l:[0,0,-22],t:"Avatar head · Hermes",d:"Stop 3 of 4 — the Hermes avatar head at the centre of capsule B, core pulsing, satellites orbiting on the gold ring."},
+ {p:[10,1,-14],l:[26,-1,-10],t:"Robot link · receptive resource",d:"Stop 4 of 4 — the robot link. Packets travel the dashed line between the Hermes head and the robot; its red cone is the receptive field."}
+];
+var st=0, pos=new THREE.Vector3(), tgt=new THREE.Vector3(), yaw=0, pitch=0, free=false, vis=true, pt=performance.now();
+var keys={}, fw=new THREE.Vector3(), rt2=new THREE.Vector3();
+var sb=[].slice.call(document.querySelectorAll("#stops button"));
+function go(i2){
+  st=i2; free=false; yaw=0; pitch=0;
+  $("vt").textContent=stops[i2].t+"\nDrag to look · WASD to fly";
+  $("vrStatus").textContent=stops[i2].d;
+  sb.forEach(function(b){ b.classList.toggle("on",+b.dataset.s===i2); });
+}
+sb.forEach(function(b){ b.addEventListener("click",function(){ go(+b.dataset.s); }); });
+var dn=false,lx=0,ly=0, cv=$("c3");
+cv.addEventListener("pointerdown",function(e){ dn=true; lx=e.clientX; ly=e.clientY; bx.focus({preventScroll:true}); });
+window.addEventListener("pointerup",function(){ dn=false; });
+window.addEventListener("pointermove",function(e){ if(!dn) return; yaw-=(e.clientX-lx)*0.005; pitch=Math.max(-1.3,Math.min(1.3,pitch-(e.clientY-ly)*0.005)); lx=e.clientX; ly=e.clientY; });
+var km={KeyW:"w",ArrowUp:"w",KeyS:"s",ArrowDown:"s",KeyA:"a",ArrowLeft:"a",KeyD:"d",ArrowRight:"d",Space:"u",KeyE:"u",KeyQ:"dn",KeyC:"dn",ShiftLeft:"sh",ShiftRight:"sh"};
+bx.addEventListener("keydown",function(e){ if(km[e.code]){ keys[km[e.code]]=1; e.preventDefault(); } });
+bx.addEventListener("keyup",function(e){ if(km[e.code]) keys[km[e.code]]=0; });
+bx.addEventListener("blur",function(){ for(var k in keys) keys[k]=0; });
+[].slice.call(document.querySelectorAll(".pad button")).forEach(function(b){
+  var k=b.dataset.k;
+  b.addEventListener("pointerdown",function(e){ e.stopPropagation(); keys[k]=1; try{b.setPointerCapture(e.pointerId);}catch(err){} });
+  ["pointerup","pointercancel"].forEach(function(v){ b.addEventListener(v,function(){ keys[k]=0; }); });
+});
+if(window.IntersectionObserver) new IntersectionObserver(function(e){ vis=e[0].isIntersecting; }).observe(bx);
+function hx(n){ return (n|0).toString(16).toUpperCase().padStart(2,"0"); }
+var lt=0;
+function frame(ms){
+  requestAnimationFrame(frame);
+  if(!vis) { pt=performance.now(); return; }
+  var t=RM?0:ms/1000, nw=performance.now(), dt=Math.min((nw-pt)/1000,0.05); pt=nw;
+  head.rotation.y=t*0.3; core.rotation.x=t*0.8; core.scale.setScalar(1+0.15*Math.sin(t*3));
+  sn.forEach(function(m,i2){ var a=t*0.6+i2*1.2566; m.position.set(Math.cos(a)*4.2,Math.sin(t*0.9+i2)*0.6,Math.sin(a)*4.2); m.rotation.y=t*2; });
+  A.rotation.y=t*0.02;
+  B.updateMatrixWorld(); head.getWorldPosition(hp); rb.getWorldPosition(rp); rp.y+=1;
+  lg.setFromPoints([hp,rp]); link.computeLineDistances();
+  pk.forEach(function(m){ var u=m.userData; if(!RM) u.t+=0.004*u.d; if(u.t>1)u.t=0; if(u.t<0)u.t=1; m.position.lerpVectors(hp,rp,u.t); });
+  var mv=(keys.w?1:0)-(keys.s?1:0), sd=(keys.d?1:0)-(keys.a?1:0), el=(keys.u?1:0)-(keys.dn?1:0);
+  if(!free&&(mv||sd||el)){ free=true; cam.rotation.order="YXZ"; yaw=cam.rotation.y; pitch=cam.rotation.x; pos.copy(cam.position); $("vrStatus").textContent="Free flight — WASD + pads move you, drag looks around. Pick a stop below to return to the tour."; }
+  if(free){
+    cam.rotation.order="YXZ"; cam.rotation.set(pitch,yaw,0); cam.updateMatrixWorld();
+    cam.getWorldDirection(fw); rt2.crossVectors(fw,cam.up).normalize();
+    var sp=(keys.sh?20:8)*dt;
+    pos.addScaledVector(fw,mv*sp).addScaledVector(rt2,sd*sp); pos.y+=el*sp; cam.position.copy(pos);
+  } else {
+    var s=stops[st]; tgt.set(s.p[0],s.p[1],s.p[2]); pos.lerp(tgt,0.05); cam.position.copy(pos);
+    cam.lookAt(new THREE.Vector3(s.l[0],s.l[1],s.l[2])); cam.rotation.order="YXZ"; cam.rotateY(yaw); cam.rotateX(pitch);
+  }
+  if(ms/1000-lt>1.1){ lt=ms/1000; $("vx").textContent="xyz "+pos.x.toFixed(1)+" "+pos.y.toFixed(1)+" "+pos.z.toFixed(1)+"\nrx "+hx(Math.random()*255)+" tx "+hx(Math.random()*255)+" · HR-0001"; }
+  renderer.render(sc,cam);
+}
+go(0); requestAnimationFrame(frame);
+}catch(e){ $("vrStatus").textContent="The 3D capsule view failed to start ("+e.message+") — the rest of the portal works without it."; }
+})();
+</script>
+</body>
+</html>

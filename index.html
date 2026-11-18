@@ -92,6 +92,10 @@
       margin: 0 0 0.25rem 0;
       letter-spacing: 0.05em;
     }
+    .red-sigil {
+      color: #ef4444;
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    }
     .meta {
       color: var(--muted);
       font-size: 0.85rem;
@@ -128,7 +132,7 @@
       <div id="ytPlayer"></div>
     </div>
 
-    <h1>D3MI3N 𖤐 CAPSULECRAFT</h1>
+    <h1>D3MI3N <span class="red-sigil">𖤐</span> CAPSULECRAFT</h1>
     <div class="meta">they/them • @SL1TH3R-RAINBOW • Houston, TX (GMT-06:00)</div>
     <p class="bio">
       Software engineer &amp; system architect building spatial mesh models, 3D avatar studios, and distributed edge infrastructure. Creator of global-capsule and OPHIODYNAMICS. Operating at the intersection of WebGL graphics, real-time streaming, and sovereign AI systems.
@@ -161,7 +165,6 @@
         },
         events: {
           onReady: (event) => {
-            // Attempt unmuted playback first; fall back to muted autoplay if browser blocks sound
             event.target.unMute();
             event.target.setVolume(100);
             event.target.playVideo();

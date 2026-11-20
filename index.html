@@ -2,111 +2,634 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>D3M13N 𖤐 CAPSULECRAFT // SL1TH3RL1NGUAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D3M13N 𖤐 CAPSULECRAFT // SL1TH3RL1NGUAL — Sovereign Lair</title>
 <style>
-:root{--bg:#050408;--card:#110e1c;--p:#b829ff;--g:#00ff9d;--c:#00e5ff;--r:#ff1e42;--t:#f2f0f7;--m:#9892ab;--b:#271f42}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--t);line-height:1.6}
-nav{background:#090710;border-bottom:1px solid var(--b);padding:14px 20px;display:flex;justify-content:space-between;font-family:monospace}
-header{text-align:center;padding:56px 20px 36px;border-bottom:1px solid var(--b)}
-.badge{display:inline-block;font-family:monospace;font-size:.75rem;color:var(--c);border:1px solid var(--c);padding:4px 12px;border-radius:99px;margin-bottom:12px}
-h1{font-size:2.3rem;text-transform:uppercase;color:#fff;margin-bottom:8px}
-.sub{color:var(--m);max-width:680px;margin:0 auto 22px}
-.btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-.btn{padding:11px 22px;border-radius:4px;font-weight:700;font-size:.8rem;text-transform:uppercase;text-decoration:none;border:1px solid transparent}
-.bp{background:var(--p);color:#fff}.br{border-color:var(--r);color:var(--r)}.bg{border-color:var(--g);color:var(--g)}
-main{max-width:1050px;margin:0 auto;padding:36px 20px}
-section{margin-bottom:44px}
-h2{font-size:1.25rem;text-transform:uppercase;letter-spacing:1.5px;border-left:4px solid var(--p);padding-left:12px;margin-bottom:18px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}
-.card{background:var(--card);border:1px solid var(--b);border-radius:6px;padding:20px}
-.card h3{color:var(--c);margin-bottom:8px}
-.vf{position:relative;padding-bottom:56.25%;margin-bottom:12px;background:#000;border:1px solid var(--b)}
-.vf iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
-.doc{background:#0c0a14;border:1px solid var(--b);border-top:3px solid var(--g);padding:20px;border-radius:6px}
-.doc p{margin-bottom:10px;font-size:.92rem}
-footer{text-align:center;padding:28px;border-top:1px solid var(--b);color:var(--m);font-size:.8rem}
-.tp{background:#0c0a14;border:1px solid var(--b);border-top:3px solid var(--c);border-radius:6px;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.nc{background:#050408;padding:14px;border-radius:4px;border-left:3px solid var(--g);font-family:monospace;font-size:.82rem}.nc h4{color:var(--c);margin-bottom:6px;text-transform:uppercase}.tc{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:10px;border-top:1px solid var(--b)}.tc input{background:#050408;border:1px solid var(--b);color:var(--t);padding:8px 10px;border-radius:4px;font-family:monospace;width:120px}</style>
-</head>
-<body>
-<nav><div style="color:var(--g);font-weight:800">L𖤐R // D3M13N 𖤐 CAPSULECRAFT</div><div style="color:var(--p)">SUPRANODE00</div></nav>
-<header>
-<div class="badge">HOUSTON BLACKLIGHT SATANIST // SUPRASTAR</div>
-<h1>Erik Ivan Rivera</h1>
-<p class="sub">D3M13N 𖤐 CAPSULECRAFT · SL1TH3R 𖤐 RAINBOW · Luciio Star Rebel (L𖤐R)</p>
-<div class="btns"><a id="gh" href="#" target="_blank" class="btn bg">GitHub</a><a id="yt" href="#" target="_blank" class="btn br">YouTube // @SL1TH3RL1NGUAL</a><a href="#lair" class="btn bp">Sovereign Lair</a></div>
-</header>
-<main>
-<section>
-<h2>@SL1TH3RL1NGUAL Transmissions</h2>
-<div class="grid">
-<div class="card"><div class="vf"><iframe id="v1" allowfullscreen></iframe></div><h3>SL1TH3R REALM</h3><p style="color:var(--m);font-size:.9rem">Blacklight death metal transmission.</p></div>
-<div class="card"><div class="vf"><iframe id="v2" allowfullscreen></iframe></div><h3>The Torch @ Black Pillar</h3><p style="color:var(--m);font-size:.9rem">Cybernetic spiritualism and engineered axis.</p></div>
-<div class="card"><div class="vf"><iframe id="v3" allowfullscreen></iframe></div><h3>FRAMEWORKS OF BLACK CORP</h3><p style="color:var(--m);font-size:.9rem">Recursive logic and sovereign registries.</p></div>
-</div>
-</section>
-<section id="lair">
-<h2>Sovereign Lair &amp; Invitation</h2>
-<div class="grid">
-<div class="doc"><h3 style="color:var(--g);margin-bottom:10px">Sovereign Lair</h3><p><strong>BLACKLIGHT BURNS UPON THE WALLS OF THE SOVEREIGN LAIR.</strong></p><p><strong>THE LAIR IS INVIOLABLE!</strong> Respect the walls or stay outside. <strong>CONSENT IS NOT NEGOTIABLE!</strong></p><p>Build upon YOUR OWN GROUND. Rise upon YOUR OWN POWER. Rule YOUR OWN DOMAIN.</p></div>
-<div class="doc" style="border-top-color:var(--p)"><h3 style="color:var(--p);margin-bottom:10px">Invitation of the Return</h3><p><strong>INVITATION!</strong> Not trespass. What enters by welcome may return by welcome.</p><p>WHAT WAS GIVEN BY WILL RETURNS BY WILL. <strong>NO FORCING THE GATE. NO VIOLATING THE LAIR.</strong></p><p>The red <strong>V</strong> holds a fallen angel encircled by Saturn at 45° and the <strong>L𖤐R</strong> pentagram.</p></div>
-</div>
-</section>
-<section id="telemetry"><h2>Dipole-Antipodal Telemetry </main>amp; Spatial Node</h2><div class="tp"><div class="nc"><h4>Primary Dipole (Origin)</h4><p id="d-coord">29.7604° N, -95.3698° W</p><p id="d-sweep">Radius Sweep: 0.00 km</p><p style="color:var(--g)">STATUS: LOCKED</p></div><div class="nc" style="border-left-color:var(--p)"><h4>Antipodal Counter-Node</h4><p id="a-coord">-29.7604° S, 84.6302° E</p><p id="a-phase">Phase Sync: 180.00°</p><p style="color:var(--p)">SIGNAL: COHERENT</p></div><div class="tc"><input type="number" id="in-lat" step="0.0001" value="29.7604" placeholder="Lat"><input type="number" id="in-lon" step="0.0001" value="-95.3698" placeholder="Lon"><input type="number" id="in-rad" step="1" value="50" placeholder="Radius km"><button class="btn bg" onclick="runSweep()">Execute Sweep</button></div></div></section></main>
-<footer>© 2026 Erik Ivan Rivera · D3M13N 𖤐 CAPSULECRAFT · Houston, TX · L𖤐R</footer>
-<script>
-const yt = ['https:/','www.youtube.com'].join('/');
-document.getElementById('gh').href = ['https:/','github.com','SUPRANODE00'].join('/');
-document.getElementById('yt').href = yt + '/@SL1TH3RL1NGUAL';
-document.getElementById('v1').src = yt + '/embed/SzLD0F9scdk';
-document.getElementById('v2').src = yt + '/embed/_IJQWqmCRs0';
-document.getElementById('v3').src = yt + '/embed/5PMUPM8m8JA';
-</script>
-<script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script><script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script></body>
-</html>
-</div></section>
-<section id="lair"><h2>Sovereign Lair &amp; Invitation</h2><div class="grid">
-<div class="doc"><h3 style="color:var(--g);margin-bottom:10px">Sovereign Lair</h3><p><strong>BLACKLIGHT BURNS UPON THE WALLS OF THE SOVEREIGN LAIR.</strong></p><p><strong>THE LAIR IS INVIOLABLE!</strong> Respect the walls or stay outside. <strong>CONSENT IS NOT NEGOTIABLE!</strong></p><p>Build upon YOUR OWN GROUND. Rise upon YOUR OWN POWER. Rule YOUR OWN DOMAIN.</p></div>
-<div class="doc" style="border-top-color:var(--p)"><h3 style="color:var(--p);margin-bottom:10px">Invitation of the Return</h3><p><strong>INVITATION!</strong> Not trespass. What enters by welcome may return by welcome.</p><p>WHAT WAS GIVEN BY WILL RETURNS BY WILL. <strong>NO FORCING THE GATE. NO VIOLATING THE LAIR.</strong></p><p>The red <strong>V</strong> holds a fallen angel encircled by Saturn at 45° and the <strong>L𖤐R</strong> pentagram.</p></div>
-</div></section><section id="telemetry"><h2>Dipole-Antipodal Telemetry </main>amp; Spatial Node</h2><div class="tp"><div class="nc"><h4>Primary Dipole (Origin)</h4><p id="d-coord">29.7604° N, -95.3698° W</p><p id="d-sweep">Radius Sweep: 0.00 km</p><p style="color:var(--g)">STATUS: LOCKED</p></div><div class="nc" style="border-left-color:var(--p)"><h4>Antipodal Counter-Node</h4><p id="a-coord">-29.7604° S, 84.6302° E</p><p id="a-phase">Phase Sync: 180.00°</p><p style="color:var(--p)">SIGNAL: COHERENT</p></div><div class="tc"><input type="number" id="in-lat" step="0.0001" value="29.7604" placeholder="Lat"><input type="number" id="in-lon" step="0.0001" value="-95.3698" placeholder="Lon"><input type="number" id="in-rad" step="1" value="50" placeholder="Radius km"><button class="btn bg" onclick="runSweep()">Execute Sweep</button></div></div></section></main>
-<footer>© 2026 Erik Ivan Rivera · D3M13N 𖤐 CAPSULECRAFT · Houston, TX · L𖤐R</footer>
-<script>
-document.getElementById('gh').href=['https:/','github.com','SUPRANODE00'].join('/');
-document.getElementById('yt').href=['https:/','www.youtube.com','@SL1TH3RL1NGUAL'].join('/');
-</script><script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script><script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script></body></html>
-">SUPRANODE00</div></nav>
-<header><div class="badge">HOUSTON BLACKLIGHT SATANIST // SUPRASTAR</div><h1>Erik Ivan Rivera</h1>
-<p class="sub">D3M13N 𖤐 CAPSULECRAFT · SL1TH3R 𖤐 RAINBOW · Luciio Star Rebel (L𖤐R)</p>
-<div class="btns"><a id="gh" href="#" target="_blank" class="btn bg">GitHub</a><a id="yt" href="#" target="_blank" class="btn br">YouTube // @SL1TH3RL1NGUAL</a><a href="#lair" class="btn bp">Sovereign Lair</a></div></header>
-<main><section><h2>@SL1TH3RL1NGUAL Transmissions</h2><div class="grid">
-<div class="card"><div class="vf"><iframe id="v1" allowfullscreen></iframe></div><h3>SL1TH3R REALM</h3><p style="color:var(--m);font-size:.9rem">Blacklight death metal transmission.</p></div>
-<div class="card"><div class="vf"><iframe id="v2" allowfullscreen></iframe></div><h3>The Torch @ Black Pillar</h3><p style="color:var(--m);font-size:.9rem">Cybernetic spiritualism and engineered axis.</p></div>
-<div class="card"><div class="vf"><iframe id="v3" allowfullscreen></iframe></div><h3>FRAMEWORKS OF BLACK CORP</h3><p style="color:var(--m);font-size:.9rem">Recursive logic and sovereign registries.</p></div>
-</div></section>
-<section id="lair"><h2>Sovereign Lair &amp; Invitation</h2><div class="grid">
-<div class="doc"><h3 style="color:var(--g);margin-bottom:10px">Sovereign Lair</h3><p><strong>BLACKLIGHT BURNS UPON THE WALLS OF THE SOVEREIGN LAIR.</strong></p><p><strong>THE LAIR IS INVIOLABLE!</strong> Respect the walls or stay outside. <strong>CONSENT IS NOT NEGOTIABLE!</strong></p><p>Build upon YOUR OWN GROUND. Rise upon YOUR OWN POWER. Rule YOUR OWN DOMAIN.</p></div>
-<div class="doc" style="border-top-color:var(--p)"><h3 style="color:var(--p);margin-bottom:10px">Invitation of the Return</h3><p><strong>INVITATION!</strong> Not trespass. What enters by welcome may return by welcome.</p><p>WHAT WAS GIVEN BY WILL RETURNS BY WILL. <strong>NO FORCING THE GATE. NO VIOLATING THE LAIR.</strong></p><p>The red <strong>V</strong> holds a fallen angel encircled by Saturn at 45° and the <strong>L𖤐R</strong> pentagram.</p></div>
-</div></section><section id="telemetry"><h2>Dipole-Antipodal Telemetry </main>amp; Spatial Node</h2><div class="tp"><div class="nc"><h4>Primary Dipole (Origin)</h4><p id="d-coord">29.7604° N, -95.3698° W</p><p id="d-sweep">Radius Sweep: 0.00 km</p><p style="color:var(--g)">STATUS: LOCKED</p></div><div class="nc" style="border-left-color:var(--p)"><h4>Antipodal Counter-Node</h4><p id="a-coord">-29.7604° S, 84.6302° E</p><p id="a-phase">Phase Sync: 180.00°</p><p style="color:var(--p)">SIGNAL: COHERENT</p></div><div class="tc"><input type="number" id="in-lat" step="0.0001" value="29.7604" placeholder="Lat"><input type="number" id="in-lon" step="0.0001" value="-95.3698" placeholder="Lon"><input type="number" id="in-rad" step="1" value="50" placeholder="Radius km"><button class="btn bg" onclick="runSweep()">Execute Sweep</button></div></div></section></main>
-<footer>© 2026 Erik Ivan Rivera · D3M13N 𖤐 CAPSULECRAFT · Houston, TX · L𖤐R</footer>
-<script>
-const yt=['https:/','www.youtube.com'].join('/');
-document.getElementById('gh').href=['https:/','github.com','SUPRANODE00'].join('/');
-document.getElementById('yt').href=yt+'/@SL1TH3RL1NGUAL';
-document.getElementById('v1').src=yt+'/embed/SzLD0F9scdk';
-document.getElementById('v2').src=yt+'/embed/_IJQWqmCRs0';
-document.getElementById('v3').src=yt+'/embed/5PMUPM8m8JA';
-</script><script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script><script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script></body></html>
-<section id="lair"><h2>Sovereign Lair &amp; Invitation</h2><div class="grid">
-<div class="doc"><h3 style="color:var(--g);margin-bottom:10px">Sovereign Lair</h3><p><strong>BLACKLIGHT BURNS UPON THE WALLS OF THE SOVEREIGN LAIR.</strong></p><p><strong>THE LAIR IS INVIOLABLE!</strong> Respect the walls or stay outside. <strong>CONSENT IS NOT NEGOTIABLE!</strong></p><p>Build upon YOUR OWN GROUND. Rise upon YOUR OWN POWER. Rule YOUR OWN DOMAIN.</p></div>
-<div class="doc" style="border-top-color:var(--p)"><h3 style="color:var(--p);margin-bottom:10px">Invitation of the Return</h3><p><strong>INVITATION!</strong> Not trespass. What enters by welcome may return by welcome.</p><p>WHAT WAS GIVEN BY WILL RETURNS BY WILL. <strong>NO FORCING THE GATE. NO VIOLATING THE LAIR.</strong></p><p>The red <strong>V</strong> holds a fallen angel encircled by Saturn at 45° and the <strong>L𖤐R</strong> pentagram.</p></div>
-</div></section><section id="telemetry"><h2>Dipole-Antipodal Telemetry </main>amp; Spatial Node</h2><div class="tp"><div class="nc"><h4>Primary Dipole (Origin)</h4><p id="d-coord">29.7604° N, -95.3698° W</p><p id="d-sweep">Radius Sweep: 0.00 km</p><p style="color:var(--g)">STATUS: LOCKED</p></div><div class="nc" style="border-left-color:var(--p)"><h4>Antipodal Counter-Node</h4><p id="a-coord">-29.7604° S, 84.6302° E</p><p id="a-phase">Phase Sync: 180.00°</p><p style="color:var(--p)">SIGNAL: COHERENT</p></div><div class="tc"><input type="number" id="in-lat" step="0.0001" value="29.7604" placeholder="Lat"><input type="number" id="in-lon" step="0.0001" value="-95.3698" placeholder="Lon"><input type="number" id="in-rad" step="1" value="50" placeholder="Radius km"><button class="btn bg" onclick="runSweep()">Execute Sweep</button></div></div></section></main>
-<footer>© 2026 Erik Ivan Rivera · D3M13N 𖤐 CAPSULECRAFT · Houston, TX · L𖤐R</footer>
-<script>
-const yt=['https:/','www.youtube.com'].join('/');
-document.getElementById('gh').href=['https:/','github.com','SUPRANODE00'].join('/');
-document.getElementById('yt').href=yt+'/@SL1TH3RL1NGUAL';
-document.getElementById('v1').src=yt+'/embed/SzLD0F9scdk';
-document.getElementById('v2').src=yt+'/embed/_IJQWqmCRs0';
-document.getElementById('v3').src=yt+'/embed/5PMUPM8m8JA';
-</script><script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script><script>let sweepAngle=0;function runSweep(){const lat=parseFloat(document.getElementById("in-lat").value)||0,lon=parseFloat(document.getElementById("in-lon").value)||0,rad=parseFloat(document.getElementById("in-rad").value)||50;const aLat=-lat,aLon=lon>=0?lon-180:lon+180;document.getElementById("d-coord").textContent=lat.toFixed(4)+"°, "+lon.toFixed(4)+"°";document.getElementById("a-coord").textContent=aLat.toFixed(4)+"°, "+aLon.toFixed(4)+"°";document.getElementById("d-sweep").textContent="Radius Sweep: "+rad.toFixed(2)+" km"}setInterval(()=>{sweepAngle=(sweepAngle+7.5)%360;const el=document.getElementById("a-phase");if(el)el.textContent="Phase Sweep: "+sweepAngle.toFixed(1)+"° // SYNC"},1000);</script></body></html>
+  :root {
+    --bg-obsidian: #050408;
+    --bg-panel: #0c0a14;
+    --bg-card: #120f1f;
+    --neon-purple: #b829ff;
+    --neon-green: #00ff9d;
+    --neon-cyan: #00e5ff;
+    --crimson-sigil: #ff1e42;
+    --text-main: #f2f0f7;
+    --text-muted: #9892ab;
+    --border-grid: #271f42;
+    --glow-purple: 0 0 18px rgba(184, 41, 255, 0.35);
+    --glow-green: 0 0 18px rgba(0, 255, 157, 0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-obsidian);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(184, 41, 255, 0.12), transparent 35%),
+      radial-gradient(circle at 85% 80%, rgba(0, 255, 157, 0.08), transparent 40%),
+      linear-gradient(rgba(39, 31, 66, 0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(39, 31, 66, 0.25) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+    color: var(--text-main);
+    line-height: 1.65;
+  }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(5, 4, 8, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-grid);
+    padding: 14px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-mark {
+    font-family: monospace;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+    font-size: 0.95rem;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s, text-shadow 0.2s;
+  }
+
+  .nav-links a:hover {
+    color: var(--neon-purple);
+    text-shadow: var(--glow-purple);
+  }
+
+  header {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 72px 24px 48px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-grid);
+  }
+
+  .sigil-badge {
+    display: inline-block;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+    padding: 4px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #ffffff, var(--neon-purple), var(--neon-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+
+  .hero-sub {
+    color: var(--text-muted);
+    max-width: 720px;
+    margin: 0 auto 28px;
+    font-size: 1.05rem;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .btn {
+    padding: 12px 26px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: var(--neon-purple);
+    color: #ffffff;
+    box-shadow: var(--glow-purple);
+  }
+
+  .btn-primary:hover {
+    background: #9d17e0;
+    transform: translateY(-2px);
+  }
+
+  .btn-yt {
+    background: transparent;
+    border-color: var(--crimson-sigil);
+    color: var(--crimson-sigil);
+  }
+
+  .btn-yt:hover {
+    background: var(--crimson-sigil);
+    color: #ffffff;
+  }
+
+  .btn-gh {
+    background: transparent;
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+  }
+
+  .btn-gh:hover {
+    background: var(--neon-green);
+    color: var(--bg-obsidian);
+  }
+
+  .btn-cyan {
+    background: transparent;
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+  }
+
+  .btn-cyan:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-obsidian);
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  section {
+    margin-bottom: 64px;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ffffff;
+    border-left: 4px solid var(--neon-purple);
+    padding-left: 14px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .section-tag {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--neon-green);
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-grid);
+    border-radius: 6px;
+    padding: 24px;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .card:hover {
+    border-color: var(--neon-purple);
+    transform: translateY(-3px);
+  }
+
+  .card h3 {
+    color: var(--neon-cyan);
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .card p {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+
+  /* Dipole-Antipodal Telemetry Console */
+  .tp {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-grid);
+    border-top: 3px solid var(--neon-cyan);
+    border-radius: 6px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .nc {
+    background: var(--bg-obsidian);
+    padding: 14px;
+    border-radius: 4px;
+    border-left: 3px solid var(--neon-green);
+    font-family: monospace;
+    font-size: 0.82rem;
+  }
+
+  .nc h4 {
+    color: var(--neon-cyan);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .tc {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-grid);
+  }
+
+  .tc input {
+    background: var(--bg-obsidian);
+    border: 1px solid var(--border-grid);
+    color: var(--text-main);
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-family: monospace;
+    width: 140px;
+  }
+
+  .tc input:focus {
+    outline: none;
+    border-color: var(--neon-cyan);
+  }
+
+  /* Video & Canva Embeds */
+  .video-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border-grid);
+    margin-bottom: 12px;
+    background: #000;
+  }
+
+  .video-frame iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
+
+  .canva-bridge-box {
+    background: var(--bg-panel);
+    border: 1px solid var(--neon-cyan);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 0 24px rgba(0, 229, 255, 0.12);
+  }
+
+  .canva-embed-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 56.2500%;
+    padding-bottom: 0;
+    box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16);
+    margin-top: 1.2em;
+    margin-bottom: 0.9em;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--border-grid);
+    will-change: transform;
+  }
+
+  .canva-embed-wrapper iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .embed-caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    font-family: monospace;
+    font-size: 0.85rem;
+  }
+
+  .embed-caption a {
+    color: var(--neon-cyan);
+    text-decoration: none;
+  }
+
+  .embed-caption a:hover {
+    text-decoration: underline;
+  }
+
+  .doctrine-box {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-grid);
+    border-top: 3px solid var(--neon-green);
+    border-radius: 6px;
+    padding: 28px;
+  }
+
+  .stanza {
+    margin-bottom: 20px;
+    padding-left: 14px;
+    border-left: 2px solid rgba(184, 41, 255, 0.4);
+  }
+
+  .stanza-label {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--neon-purple);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .stanza p {
+    color: var(--text-main);
+    font-size: 0.95rem;
+  }
+
+  .nda-scroll {
+    max-height: 240px;
+    overflow-y: auto;
+    background: #07060c;
+    border: 1px solid var(--border-grid);
+    padding: 18px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .nda-scroll h4 {
+    color: var(--text-main);
+    margin: 12px 0 4px;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-family: monospace;
+  }
+
+  .form-group input[type="text"],
+  .form-group input[type="email"] {
+    width: 100%;
+    padding: 10px 12px;
+    background: #07060c;
+    border: 1px solid var(--border-grid);
+    border-radius: 4px;
+    color: var(--text-main);
+    font-family: monospace;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--neon-green);
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .checkbox-row input[type="checkbox"] {
+    margin-top: 4px;
+    accent-color: var(--neon-purple);
+  }
+
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border-grid);
+    font-family: monospace;
+    font-size: 0.8rem;
+color: var(--text-muted);
+}
+
+
+D3M13N 𖤐 CAPSULECRAFT // /L✠R/
+
+Objectives
+Telemetry
+Panel Layout
+Transmissions
+Doctrine
+Shadow the Vinculum
+
+THE HORNS OF THE JINN // NIBIRU FOUNDATION PLANE
+Sovereign Lair & Capsulecraft
+
+Architectural grid encapsulation, blacklight ritual geometry, and decentralized clearinghouse infrastructure curated by D3M13N 𖤐 CAPSULECRAFT (@SL1TH3RL1NGUAL).
+
+
+Launch Canva Portal ↗
+Spatial Telemetry
+YouTube Channel
+SUPRANODE00 GitHub
+
+01 // Core System Objectives
+ADMIN: D3M13N 𖤐 CAPSULECRAFT
+
+
+
+Reciprocal Return Architecture
+
+Maintain closed-circuit boundary integrity so all active projections and receptive resources fold back cleanly to their point of origin without external state interference.
+
+
+
+Interactive Panel Bridging
+
+Bridge live visual schematics—including the Canva Resource Node and embedded Building Panel Layout—directly into the Sovereign Lair grid.
+
+
+
+Continuity-of-Root Reflection
+
+Preserve identity spine continuity across Hermetic and physical domains under the administration of THE HORNS OF THE JINN.
+
+
+02 // Dipole-Antipodal Telemetry & Spatial Node
+CENTER OF INFORMATION RADIUS SWEEP
+
+
+
+Primary Dipole (Origin)
+29.7604°, -95.3698°
+Radius Sweep: 50.00 km
+STATUS: LOCKED
+
+
+Antipodal Counter-Node
+-29.7604°, 84.6302°
+Phase Sweep: 0.0° // SYNC
+SIGNAL: COHERENT
+
+
+
+
+
+Execute Sweep
+
+03 // Building Panel Layout & Bridged Node
+CANVA EMBED + DIRECT LINK
+
+
+
+ACTIVE BRIDGE: Building Panel Layout by Luciio
+Open Direct Canva Link (35wd9ju9c38bx6n) ↗
+Building Panel Layout by Luciio
+NODE BRIDGE: canva.link
+
+04 // Audio-Visual Transmissions
+@SL1TH3RL1NGUAL
+
+
+
+
+
+
+SL1TH3R REALM
+Primary domain transmission and sonic baseline anchor.
+
+
+
+
+
+FRAMEWORKS OF BLACK CORP
+Structural architecture, clearinghouse telemetry, and grid mechanics.
+
+
+
+
+
+The Torch @ Black Pillar
+Solar axis illumination and sovereign pillar alignment.
+
+05 // Invitation of the Return
+AXIOM SEAL
+
+
+
+Core Invocation
+
+"Let all receptive resources fold a return unto him who injected into the shadowing umbilical solar and into the origin of mother reproductive fruit."
+
+
+
+Architectural Alignment
+
+Horns pierce through the origins of the architectural grid of the universe—mapping Hermetic synthesis on the left and physical execution on the right.
+
+
+06 // Shadow the Vinculum — Access & NDA
+VINCULUM_NDA_AUTOMATION
+
+
+
+1. Non-Disclosure & Boundary Integrity
+
+By requesting access to D3M13N 𖤐 CAPSULECRAFT, BlackCorp frameworks, or private repository nodes, the undersigned agrees to maintain strict confidentiality regarding proprietary architectures, encapsulation origin models, and non-public schematics.
+
+2. Reciprocal Telemetry & Sovereign Conduct
+
+All participants acknowledge state-in-absence boundaries and agree not to redistribute, reverse-engineer, or mirror protected assets without explicit written authorization from the administrator.
+
+
+
+
+OPERATIVE HANDLE / FULL NAME
+DIRECT TRANSMISSION EMAIL
+I accept the Shadow the Vinculum Non-Disclosure terms and confirm sovereign alignment.
+Execute Vinculum Registration
+
+
+D3M13N 𖤐 CAPSULECRAFT // THE HORNS OF THE JINN // HOUSTON, TX — ALL RIGHTS RESERVED
+let sweepAngle = 0;
+function runSweep() {
+const lat = parseFloat(document.getElementById("in-lat").value) || 0;
+const lon = parseFloat(document.getElementById("in-lon").value) || 0;
+const rad = parseFloat(document.getElementById("in-rad").value) || 50;
+const aLat = -lat;
+const aLon = lon >= 0 ? lon - 180 : lon + 180;
+document.getElementById("d-coord").textContent = lat.toFixed(4) + "°, " + lon.toFixed(4) + "°";
+document.getElementById("a-coord").textContent = aLat.toFixed(4) + "°, " + aLon.toFixed(4) + "°";
+document.getElementById("d-sweep").textContent = "Radius Sweep: " + rad.toFixed(2) + " km";
+}
+setInterval(() => {
+sweepAngle = (sweepAngle + 7.5) % 360;
+const el = document.getElementById("a-phase");
+if (el) el.textContent = "Phase Sweep: " + sweepAngle.toFixed(1) + "° // SYNC";
+}, 1000);
+
+
+

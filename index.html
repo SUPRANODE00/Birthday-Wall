@@ -678,3 +678,23 @@ if (el) el.textContent = "Phase Sweep: " + sweepAngle.toFixed(1) + "° // SYNC";
 </script>
 </body>
 </html>
+
+<section id="vinculum" style="max-width:1100px;margin:40px auto;padding:24px;background:#120f1f;border:1px solid #271f42;border-radius:6px;">
+  <h2 style="color:#fff;text-transform:uppercase;letter-spacing:2px;border-left:4px solid #b829ff;padding-left:14px;margin-bottom:16px;">Shadow the Vinculum — Access &amp; NDA</h2>
+  <form action="https://formsubmit.co" method="POST">
+    <input type="hidden" name="_subject" value="[VINCULUM NDA] New Sovereign Lair Registration">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="https://github.io">
+    <input type="text" name="alias" placeholder="Operative Handle / Full Name" required style="width:100%;padding:10px;margin-bottom:10px;background:#07060c;border:1px solid #271f42;color:#f2f0f7;font-family:monospace;">
+    <input type="email" name="email" placeholder="Direct Transmission Email" required style="width:100%;padding:10px;margin-bottom:10px;background:#07060c;border:1px solid #271f42;color:#f2f0f7;font-family:monospace;">
+    <label style="display:block;margin-bottom:14px;font-size:0.85rem;color:#9892ab;"><input type="checkbox" name="nda_accepted" value="ACCEPTED" required> I accept the Shadow the Vinculum Non-Disclosure terms.</label>
+    <button type="submit" style="padding:12px 24px;background:#b829ff;color:#fff;border:none;border-radius:4px;font-weight:700;cursor:pointer;">Execute Vinculum Registration</button>
+    <p id="vinculum-ack" style="display:none;margin-top:12px;font-family:monospace;color:#00ff9d;">[ACK] VINCULUM NDA DISPATCHED &amp; SEALED.</p>
+  </form>
+</section>
+<script>
+  const p=new URLSearchParams(window.location.search);
+  if(p.get("submitted")==="true"){const a=document.getElementById("vinculum-ack");if(a)a.style.display="block";}
+  if(p.get("mac")){const d=document.getElementById("d-sweep");if(d)d.textContent+=" // NODE MAC: "+p.get("mac");}
+</script>
+</body></html>
